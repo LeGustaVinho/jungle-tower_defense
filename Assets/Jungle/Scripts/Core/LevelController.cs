@@ -1,51 +1,101 @@
-using System;
-using System.Collections;
 using Jungle.Scripts.Entities;
+using Jungle.Scripts.Mechanics;
 using LegendaryTools;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Jungle.Scripts.Core
 {
-    public class LevelController : MonoBehaviour
+    public class LevelController
     {
-        public StructureEntity StructurePrefab;
-        public NpcEntity NpcPrefab;
+        private LevelConfig levelConfig;
+        private ITimerManager timerManager;
 
-        public BoxCollider SpawnerArea;
-        public GoalTriggerDispatcher GoalTriggerDispatcher;
-        public BoxCollider GoalCollider;
+        private BoxCollider spawnerArea;
+        private GoalTriggerDispatcher goalTriggerDispatcher;
+        private BoxCollider goalCollider;
 
-        public float SpawnInterval;
-        private Coroutine spawnRoutine;
+        [ShowInInspector]
+        private bool isActive;
+        
+        [ShowInInspector]
+        private int level;
 
-        public void Start()
+        [ShowInInspector] private float LevelTime => levelTimer?.Time ?? 0;
+
+        private Timer spawnNpcTimer;
+        private Timer levelTimer;
+
+        public LevelController(LevelConfig levelConfig, ITimerManager timerManager, BoxCollider spawnerArea, GoalTriggerDispatcher goalTriggerDispatcher)
         {
-            
+            this.levelConfig = levelConfig;
+            this.timerManager = timerManager;
+            this.spawnerArea = spawnerArea;
+            this.goalTriggerDispatcher = goalTriggerDispatcher;
+
+            goalCollider = goalTriggerDispatcher.GetComponent<BoxCollider>();
+            goalTriggerDispatcher.OnTriggerEnterEvent += OnGoalTriggerEnter;
+        }
+
+        private void OnGoalTriggerEnter(Entity entity)
+        {
+            Pool.Destroy(entity);
         }
 
         [Button]
         public void StartLevel()
         {
-            spawnRoutine = StartCoroutine(NpcSpawnRoutine());
+            level = 0;
+            isActive = true;
+            SpawnNpc();
+            
+            levelTimer = timerManager.SetTimer(levelConfig.RoundTime, StartNextLevel);
         }
         
         [Button]
         public void StopLevel()
         {
-            StopCoroutine(spawnRoutine);
+            isActive = false;
+            if (spawnNpcTimer != null)
+            {
+                timerManager.AbortTimer(spawnNpcTimer);
+                spawnNpcTimer = null;
+            }
+            
+            if (levelTimer != null)
+            {
+                timerManager.AbortTimer(levelTimer);
+                levelTimer = null;
+            }
         }
 
-        private IEnumerator NpcSpawnRoutine()
+        private void StartNextLevel()
         {
-            Vector3 randomSpawnPoint = SpawnerArea.bounds.RandomInsideBox();
-            NpcEntity newNpc = Instantiate(NpcPrefab, randomSpawnPoint, Quaternion.identity);
-            Vector3 randomTargetPoint = GoalCollider.bounds.RandomInsideBox();
+            level++;
+            levelTimer = timerManager.SetTimer(levelConfig.RoundTime, StartNextLevel);
+        }
+
+        private void SpawnNpc()
+        {
+            RandomWeightNpcConfig randomNpcConfig = levelConfig.SpawnChance.GetRandomWeight();
+            
+            Vector3 randomSpawnPoint = spawnerArea.bounds.RandomInsideBox();
+            NpcEntity newNpc = Pool.Instantiate(randomNpcConfig.Config.Prefab, randomSpawnPoint, Quaternion.identity);
+            Vector3 randomTargetPoint = goalCollider.bounds.RandomInsideBox();
+            
+            newNpc.Initialize(randomNpcConfig.Config, level, timerManager);
             newNpc.SetAgentTarget(randomTargetPoint);
-            
-            yield return new WaitForSeconds(SpawnInterval);
-            
-            spawnRoutine = StartCoroutine(NpcSpawnRoutine());
+            newNpc.CombatSystemComponent.OnDie += OnNpcDie;
+
+            if (isActive)
+            {
+                spawnNpcTimer = timerManager.SetTimer(levelConfig.SpawnInterval, SpawnNpc);
+            }
+        }
+
+        private void OnNpcDie(Entity killed, Entity killer)
+        {
+            Pool.Destroy(killed);
         }
     }
 }

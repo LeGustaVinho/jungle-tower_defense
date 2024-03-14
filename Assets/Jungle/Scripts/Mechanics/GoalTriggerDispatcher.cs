@@ -1,18 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using Jungle.Scripts.Entities;
 using UnityEngine;
 
-public class GoalTriggerDispatcher : MonoBehaviour
+namespace Jungle.Scripts.Mechanics
 {
-    // Start is called before the first frame update
-    void Start()
+    public class GoalTriggerDispatcher : MonoBehaviour
     {
+        public event Action<Entity> OnTriggerEnterEvent; 
         
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        protected void OnTriggerEnter(Collider other)
+        {
+            Entity entity = other.GetComponent<Entity>();
+            if (entity != null)
+            {
+                OnTriggerEnterEvent?.Invoke(entity);
+            }
+        }
     }
 }

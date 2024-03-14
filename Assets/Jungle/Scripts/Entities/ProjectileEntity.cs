@@ -43,6 +43,10 @@ namespace Jungle.Scripts.Entities
                     Pool.Destroy(gameObject);
                 }
             }
+            else
+            {
+                Pool.Destroy(gameObject);
+            }
         }
 
         public void OnConstruct()

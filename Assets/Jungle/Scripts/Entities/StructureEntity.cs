@@ -14,17 +14,15 @@ namespace Jungle.Scripts.Entities
         [SerializeField] private TargetSystem targetSystem;
         [SerializeField] private ProjectileEntity projectileEntityPrefab;
         [SerializeField] private Transform ProjectileStartPoint;
-        
-        [Button]
-        public void Initialize()
+
+        public override void Initialize(EntityConfig config, int level, ITimerManager timerManager)
         {
-            ITimerManager timerManager = new TimerManager();
+            base.Initialize(config, level, timerManager);
+            
             IProjectileSystem projectileSystem =
-                new ProjectileSystem(projectileEntityPrefab, ProjectileStartPoint.position, Structure.CombatAttributes.ProjectileSpeed);
+                new ProjectileSystem(projectileEntityPrefab, ProjectileStartPoint.position, Attributes[EntityAttribute.ProjectileSpeed]);
             
-            CombatSystemComponent = new CombatSystem(this, Structure.CombatAttributes, timerManager, targetSystem, projectileSystem);
-            
-            timerManager.Initialize();
+            CombatSystemComponent = new CombatSystem(this, timerManager, targetSystem, projectileSystem);
             CombatSystemComponent.Enable();
         }
     }

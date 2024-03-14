@@ -7,8 +7,6 @@ namespace Jungle.Scripts.Entities
     [Serializable]
     public class Structure
     {
-        public CombatAttributes CombatAttributes;
-
         [FoldoutGroup("Economy")]
         public float BaseUpradeCost;
     }

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36bf7dd6a6ad4bdf98554fc48d7332f7, type: 3}
+  m_Name: DefaultLevelConfig
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  StructurePrefab: {fileID: 5900254958730229012, guid: cc000dbc48faf7245ae511a8e2b24c86, type: 3}
+  EntityConfig: {fileID: 11400000, guid: efa26f454779ecf43bb80a622bf4178d, type: 2}
+  SpawnChance:
+  - weight: 0.3333
+    Config: {fileID: 11400000, guid: f0b9ffb804435154ebae2e74c62686f3, type: 2}
+  - weight: 0.3333
+    Config: {fileID: 11400000, guid: f0b9ffb804435154ebae2e74c62686f3, type: 2}
+  - weight: 0.3333
+    Config: {fileID: 11400000, guid: f0b9ffb804435154ebae2e74c62686f3, type: 2}
+  RoundTime: 5
+  SpawnInterval: 0.5
