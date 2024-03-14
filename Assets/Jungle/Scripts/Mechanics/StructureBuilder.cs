@@ -11,15 +11,43 @@ namespace Jungle.Scripts.Mechanics
         public StructureBuilderConfig StructureBuilderConfig;
 
         public List<StructureEntity> StructuresBuilt = new List<StructureEntity>();
+
+        private ScreenToWorldInfo structureBuilderRaycaster;
+        private ScreenToWorldInfo structureUpgradeRaycaster;
         private ITimerManager timerManager;
         private Player player;
 
-        public StructureBuilder(StructureBuilderConfig structureBuilderConfig, ITimerManager timerManager, Player player)
+        public StructureBuilder(StructureBuilderConfig structureBuilderConfig, ITimerManager timerManager, 
+            Player player, ScreenToWorldInfo structureBuilderRaycaster, ScreenToWorldInfo structureUpgradeRaycaster)
         {
             this.timerManager = timerManager;
             this.player = player;
             StructureBuilderConfig = structureBuilderConfig;
-            ScreenToWorldInfo.Instance.On3DHit += OnTryToBuild;
+            this.structureBuilderRaycaster = structureBuilderRaycaster;
+            this.structureUpgradeRaycaster = structureUpgradeRaycaster;
+            structureBuilderRaycaster.On3DHit += OnTryToBuild;
+            structureUpgradeRaycaster.On3DHit += OnTryToUpgrade;
+        }
+
+        private void OnTryToUpgrade(RaycastHit hitinfo)
+        {
+            StructureEntity structureEntity = hitinfo.transform.GetComponent<StructureEntity>();
+            if (structureEntity == null)
+            {
+                return;
+            }
+            
+            float upgradeCost = structureEntity.structureConfig.LevelAttributes[EntityAttribute.UpgradeCost]
+                .GetValueForLevel(structureEntity.Level + 1);
+            if (player.Money > upgradeCost)
+            {
+                player.Money -= Mathf.FloorToInt(upgradeCost);
+                structureEntity.Upgrade();
+            }
+            else
+            {
+                return;
+            }
         }
 
         private void OnTryToBuild(RaycastHit hitinfo)

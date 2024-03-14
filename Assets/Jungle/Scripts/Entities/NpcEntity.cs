@@ -2,6 +2,7 @@ using System.Collections;
 using Jungle.Scripts.Core;
 using Jungle.Scripts.Mechanics;
 using LegendaryTools;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,14 +10,14 @@ namespace Jungle.Scripts.Entities
 {
     public class NpcEntity : Entity, IPoolable
     {
-        [SerializeField] private TargetSystem targetSystem;
+        [BoxGroup("Npc Entity")]
         [SerializeField] private NavMeshAgent NavMeshAgent;
-
+        
         public override void Initialize(EntityConfig config, int level, ITimerManager timerManager)
         {
             base.Initialize(config, level, timerManager);
             
-            CombatSystemComponent = new CombatSystem(this, timerManager, targetSystem, null);
+            CombatSystemComponent = new CombatSystem(this, timerManager, null, null);
 
             NavMeshAgent.speed = Attributes[EntityAttribute.Speed];
             NavMeshAgent.angularSpeed = Attributes[EntityAttribute.AngularSpeed];

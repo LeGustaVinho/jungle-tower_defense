@@ -20,6 +20,7 @@ namespace Jungle.Scripts.Entities
         Cost,
         PlayerDamage,
         Money,
+        UpgradeCost,
     }
     
     public enum EntityType

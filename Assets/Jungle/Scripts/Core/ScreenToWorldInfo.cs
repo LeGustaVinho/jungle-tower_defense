@@ -5,9 +5,8 @@ namespace LegendaryTools.Input
     public delegate void On3DWorldHitEventHandler(RaycastHit HitInfo);
 
     public delegate void On2DWorldHitEventHandler(RaycastHit2D HitInfo);
-
-    [RequireComponent(typeof(Camera))]
-    public class ScreenToWorldInfo : SingletonBehaviour<ScreenToWorldInfo>
+    
+    public class ScreenToWorldInfo : MonoBehaviour
     {
         public enum EventTriggerType
         {

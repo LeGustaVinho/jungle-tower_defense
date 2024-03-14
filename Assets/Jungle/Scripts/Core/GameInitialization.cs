@@ -1,6 +1,7 @@
 using System;
 using Jungle.Scripts.Entities;
 using Jungle.Scripts.Mechanics;
+using LegendaryTools.Input;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -20,6 +21,10 @@ namespace Jungle.Scripts.Core
         [SerializeField] private BoxCollider spawnerArea;
         [BoxGroup("SceneRefs")]
         [SerializeField] private GoalTriggerDispatcher goalTriggerDispatcher;
+        [BoxGroup("SceneRefs")]
+        [SerializeField] private ScreenToWorldInfo structureBuildRaycaster;
+        [BoxGroup("SceneRefs")]
+        [SerializeField] private ScreenToWorldInfo structureUpgradeRaycaster;
 
         [ShowInInspector][BoxGroup("Systems")]
         private LevelController levelController;
@@ -37,7 +42,8 @@ namespace Jungle.Scripts.Core
         {
             timerManager = new TimerManager();
             player = new Player(playerConfig);
-            structureBuilder = new StructureBuilder(structureBuilderConfig,timerManager, player);
+            structureBuilder = new StructureBuilder(structureBuilderConfig,timerManager, player, 
+                structureBuildRaycaster, structureUpgradeRaycaster);
             levelController = new LevelController(levelConfig, timerManager, spawnerArea, goalTriggerDispatcher, player);
             
             timerManager.Initialize();

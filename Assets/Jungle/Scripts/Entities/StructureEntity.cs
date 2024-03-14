@@ -4,25 +4,46 @@ using System.Collections.Generic;
 using Jungle.Scripts.Core;
 using Jungle.Scripts.Mechanics;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
 
 namespace Jungle.Scripts.Entities
 {
     public class StructureEntity : Entity
     {
-        [SerializeField] private TargetSystem targetSystem;
-        [SerializeField] private ProjectileEntity projectileEntityPrefab;
-        [SerializeField] private Transform ProjectileStartPoint;
+        [SerializeField][BoxGroup("Structure")]
+        private Transform ProjectileStartPoint;
+
+        [ShowInInspector][BoxGroup("Structure")]
+        public StructureConfig structureConfig { private set; get; }
+        
+        [SerializeField][BoxGroup("Structure")]
+        private TextMeshProUGUI levelText;
 
         public override void Initialize(EntityConfig config, int level, ITimerManager timerManager)
         {
             base.Initialize(config, level, timerManager);
             
-            IProjectileSystem projectileSystem =
-                new ProjectileSystem(projectileEntityPrefab, ProjectileStartPoint.position, Attributes[EntityAttribute.ProjectileSpeed]);
+            structureConfig = config as StructureConfig;
             
-            CombatSystemComponent = new CombatSystem(this, timerManager, targetSystem, projectileSystem);
+            IProjectileSystem projectileSystem =
+                new ProjectileSystem(structureConfig.ProjectilePrefab, ProjectileStartPoint.position, Attributes[EntityAttribute.ProjectileSpeed]);
+            
+            CombatSystemComponent = new CombatSystem(this, timerManager, structureConfig.TargetSystem, projectileSystem);
             CombatSystemComponent.Enable();
+
+            levelText.text = level.ToString();
+        }
+
+        public void Upgrade()
+        {
+            Level++;
+            levelText.text = Level.ToString();
+            Attributes.Clear();
+            foreach (KeyValuePair<EntityAttribute, SimpleAttribute> pair in Config.LevelAttributes)
+            {
+                Attributes.Add(pair.Key, pair.Value.GetValueForLevel(Level));
+            }
         }
     }
 }

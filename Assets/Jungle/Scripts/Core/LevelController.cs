@@ -79,8 +79,9 @@ namespace Jungle.Scripts.Core
             RandomWeightNpcConfig randomNpcConfig = levelConfig.SpawnChance.GetRandomWeight();
             
             Vector3 randomSpawnPoint = spawnerArea.bounds.RandomInsideBox();
-            NpcEntity newNpc = Pool.Instantiate(randomNpcConfig.Config.Prefab, randomSpawnPoint, Quaternion.identity);
             Vector3 randomTargetPoint = goalCollider.bounds.RandomInsideBox();
+            NpcEntity newNpc = Pool.Instantiate(randomNpcConfig.Config.Prefab, randomSpawnPoint, 
+                Quaternion.LookRotation(randomTargetPoint - randomSpawnPoint));
             
             newNpc.Initialize(randomNpcConfig.Config, level, timerManager);
             newNpc.SetAgentTarget(randomTargetPoint);
@@ -100,6 +101,7 @@ namespace Jungle.Scripts.Core
 
         private void OnNpcDie(Entity killed, Entity killer)
         {
+            killed.CombatSystemComponent.OnDie -= OnNpcDie;
             Pool.Destroy(killed);
             player.Points += (int)killed.Attributes[EntityAttribute.Points];
             player.Money += (int)killed.Attributes[EntityAttribute.Money];

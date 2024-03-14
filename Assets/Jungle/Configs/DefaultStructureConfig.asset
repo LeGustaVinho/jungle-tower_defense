@@ -41,7 +41,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 7
+      Data: 8
     - Name: 
       Entry: 7
       Data: 
@@ -101,7 +101,7 @@ MonoBehaviour:
       Data: 4|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
     - Name: BaseValue
       Entry: 4
-      Data: 20
+      Data: 10
     - Name: FlatValuePerLevel
       Entry: 4
       Data: 1
@@ -211,6 +211,30 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 13
+    - Name: $v
+      Entry: 7
+      Data: 9|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 2
+    - Name: FlatValuePerLevel
+      Entry: 4
+      Data: 0.5
+    - Name: FactorValuePerLevel
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
       Entry: 13
       Data: 
     - Name: 
@@ -218,3 +242,5 @@ MonoBehaviour:
       Data: 
   Type: 1
   Prefab: {fileID: 5900254958730229012, guid: cc000dbc48faf7245ae511a8e2b24c86, type: 3}
+  ProjectilePrefab: {fileID: 6508720899181066925, guid: 14e3e5a23e6890b4cb63bc1197660bbf, type: 3}
+  TargetSystem: {fileID: 11400000, guid: 8561ac09a6af42a44ab607ac95d3b998, type: 2}

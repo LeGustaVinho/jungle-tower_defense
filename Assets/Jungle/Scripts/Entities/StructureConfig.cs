@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Jungle.Scripts.Mechanics;
+using UnityEngine;
 
 namespace Jungle.Scripts.Entities
 {
@@ -6,5 +7,7 @@ namespace Jungle.Scripts.Entities
     public class StructureConfig : EntityConfig
     {
         public StructureEntity Prefab;
+        public ProjectileEntity ProjectilePrefab;
+        public TargetSystem TargetSystem;
     }
 }

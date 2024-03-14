@@ -9,18 +9,20 @@ namespace Jungle.Scripts.Entities
 {
     public class Entity : MonoBehaviour, ICombatable
     {
+        [BoxGroup("Entity")]
         public EntityConfig Config;
         
-        [SerializeField] 
+        [SerializeField] [BoxGroup("Entity")]
         private Transform Transform;
 
         public Vector3 Position => Transform.position;
         
         public CombatSystem CombatSystemComponent { protected set; get; }
         
-        [ShowInInspector]
+        [ShowInInspector][BoxGroup("Entity")]
         public Dictionary<EntityAttribute, float> Attributes = new Dictionary<EntityAttribute, float>();
 
+        [BoxGroup("Entity")]
         public int Level;
 
         public bool IsAlive => Attributes[EntityAttribute.HealthPoints] > 0;
