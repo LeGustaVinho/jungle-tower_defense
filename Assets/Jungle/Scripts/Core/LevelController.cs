@@ -1,3 +1,4 @@
+using System;
 using Jungle.Scripts.Entities;
 using Jungle.Scripts.Mechanics;
 using LegendaryTools;
@@ -8,6 +9,8 @@ namespace Jungle.Scripts.Core
 {
     public class LevelController
     {
+        public event Action<int> OnChangeLevel; 
+        
         private LevelConfig levelConfig;
         private ITimerManager timerManager;
 
