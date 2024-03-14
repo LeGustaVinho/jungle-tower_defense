@@ -16,6 +16,10 @@ namespace Jungle.Scripts.Entities
         HealthPoints,
         ScanTargetInterval,
         ProjectileSpeed,
+        Points,
+        Cost,
+        PlayerDamage,
+        Money,
     }
     
     public enum EntityType

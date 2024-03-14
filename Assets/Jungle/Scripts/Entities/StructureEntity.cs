@@ -10,7 +10,6 @@ namespace Jungle.Scripts.Entities
 {
     public class StructureEntity : Entity
     {
-        public Structure Structure;
         [SerializeField] private TargetSystem targetSystem;
         [SerializeField] private ProjectileEntity projectileEntityPrefab;
         [SerializeField] private Transform ProjectileStartPoint;

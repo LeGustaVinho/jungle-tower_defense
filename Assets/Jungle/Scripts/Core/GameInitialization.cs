@@ -7,11 +7,14 @@ using UnityEngine.Serialization;
 
 namespace Jungle.Scripts.Core
 {
-    public class GameInitialization : MonoBehaviour
+    public class GameInitialization : SerializedMonoBehaviour
     {
         [BoxGroup("Configs")]
         [SerializeField] private LevelConfig levelConfig;
-        [SerializeField] private StructureBuilder structureBuilder;
+        [BoxGroup("Configs")]
+        [SerializeField] private StructureBuilderConfig structureBuilderConfig;
+        [BoxGroup("Configs")]
+        [SerializeField] private PlayerConfig playerConfig;
         
         [BoxGroup("SceneRefs")]
         [SerializeField] private BoxCollider spawnerArea;
@@ -21,16 +24,23 @@ namespace Jungle.Scripts.Core
         [ShowInInspector][BoxGroup("Systems")]
         private LevelController levelController;
         
-        [ShowInInspector]
+        [ShowInInspector][BoxGroup("Systems")]
         private ITimerManager timerManager;
+        
+        [ShowInInspector][BoxGroup("Systems")]
+        private Player player;
+        
+        [ShowInInspector][BoxGroup("Systems")]
+        private StructureBuilder structureBuilder;
         
         public void Start()
         {
             timerManager = new TimerManager();
-            levelController = new LevelController(levelConfig, timerManager, spawnerArea, goalTriggerDispatcher);
+            player = new Player(playerConfig);
+            structureBuilder = new StructureBuilder(structureBuilderConfig,timerManager, player);
+            levelController = new LevelController(levelConfig, timerManager, spawnerArea, goalTriggerDispatcher, player);
             
             timerManager.Initialize();
-            structureBuilder.Initialize(timerManager);
         }
     }
 }

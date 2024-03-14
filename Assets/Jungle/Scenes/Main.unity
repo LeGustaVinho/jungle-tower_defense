@@ -249,8 +249,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1093968048167349a1877631728620a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   levelConfig: {fileID: 11400000, guid: c915e8e63a9e80d4d9925e4df3ed259b, type: 2}
-  structureBuilder: {fileID: 11400000, guid: ebfe4bab59f2cc94a95737376dc607a1, type: 2}
+  structureBuilderConfig: {fileID: 11400000, guid: c7b50900789086341a325f978e4b132d, type: 2}
+  playerConfig: {fileID: 11400000, guid: 5eb5ce9a21f505d43a976a91fc293834, type: 2}
   spawnerArea: {fileID: 1218929134}
   goalTriggerDispatcher: {fileID: 612742822}
 --- !u!4 &341491838
@@ -320,7 +330,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c0168f70f56d67549b357b8f15c43e2f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -927,7 +937,7 @@ GameObject:
   - component: {fileID: 1218929136}
   - component: {fileID: 1218929135}
   - component: {fileID: 1218929134}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnArea
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}

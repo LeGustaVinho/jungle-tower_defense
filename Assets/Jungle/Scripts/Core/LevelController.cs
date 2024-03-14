@@ -25,21 +25,20 @@ namespace Jungle.Scripts.Core
 
         private Timer spawnNpcTimer;
         private Timer levelTimer;
+        private Player player;
 
-        public LevelController(LevelConfig levelConfig, ITimerManager timerManager, BoxCollider spawnerArea, GoalTriggerDispatcher goalTriggerDispatcher)
+        public LevelController(LevelConfig levelConfig, ITimerManager timerManager, BoxCollider spawnerArea, 
+            GoalTriggerDispatcher goalTriggerDispatcher, Player player)
         {
             this.levelConfig = levelConfig;
             this.timerManager = timerManager;
             this.spawnerArea = spawnerArea;
             this.goalTriggerDispatcher = goalTriggerDispatcher;
+            this.player = player;
 
             goalCollider = goalTriggerDispatcher.GetComponent<BoxCollider>();
             goalTriggerDispatcher.OnTriggerEnterEvent += OnGoalTriggerEnter;
-        }
-
-        private void OnGoalTriggerEnter(Entity entity)
-        {
-            Pool.Destroy(entity);
+            player.OnLoseGame += StopLevel;
         }
 
         [Button]
@@ -92,10 +91,18 @@ namespace Jungle.Scripts.Core
                 spawnNpcTimer = timerManager.SetTimer(levelConfig.SpawnInterval, SpawnNpc);
             }
         }
+        
+        private void OnGoalTriggerEnter(Entity entity)
+        {
+            Pool.Destroy(entity);
+            player.CurrentHealthPoint -= (int)entity.Attributes[EntityAttribute.PlayerDamage];
+        }
 
         private void OnNpcDie(Entity killed, Entity killer)
         {
             Pool.Destroy(killed);
+            player.Points += (int)killed.Attributes[EntityAttribute.Points];
+            player.Money += (int)killed.Attributes[EntityAttribute.Money];
         }
     }
 }

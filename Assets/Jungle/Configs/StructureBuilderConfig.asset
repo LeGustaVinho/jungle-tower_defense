@@ -9,13 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44136daa5b62436c827f4f3942ef40ab, type: 3}
-  m_Name: StructureBuilder
+  m_Script: {fileID: 11500000, guid: 78a49c3ddd31464881e2b747d3005abc, type: 3}
+  m_Name: StructureBuilderConfig
   m_EditorClassIdentifier: 
   StructureLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 896
   GridSnappingDistance: 2.5
   AvailableStructures:
   - {fileID: 11400000, guid: f537d26c474695b48895aac2589ff62c, type: 2}
-  StructuresBuilt: []

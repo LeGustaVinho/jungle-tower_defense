@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40cb2cc274064ecf9af0c65c39de3e7d, type: 3}
-  m_Name: DefaultStructureConfig
+  m_Script: {fileID: 11500000, guid: cbe7a436055b4a2ebd8b7a5ebab62f6a, type: 3}
+  m_Name: DefaultNpcConfig
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -41,13 +41,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 6
+      Data: 12
     - Name: 
       Entry: 7
       Data: 
     - Name: $k
       Entry: 3
-      Data: 3
+      Data: 0
     - Name: $v
       Entry: 7
       Data: 2|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
@@ -56,7 +56,79 @@ MonoBehaviour:
       Data: 10
     - Name: FlatValuePerLevel
       Entry: 4
+      Data: 0
+    - Name: FactorValuePerLevel
+      Entry: 4
+      Data: 0.01
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
       Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 3|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 270
+    - Name: FlatValuePerLevel
+      Entry: 4
+      Data: 0
+    - Name: FactorValuePerLevel
+      Entry: 4
+      Data: 0.01
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 7
+      Data: 4|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 100
+    - Name: FlatValuePerLevel
+      Entry: 4
+      Data: 0
+    - Name: FactorValuePerLevel
+      Entry: 4
+      Data: 0.01
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 3
+    - Name: $v
+      Entry: 7
+      Data: 5|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 10000
+    - Name: FlatValuePerLevel
+      Entry: 4
+      Data: 0
     - Name: FactorValuePerLevel
       Entry: 4
       Data: 0
@@ -72,78 +144,6 @@ MonoBehaviour:
     - Name: $k
       Entry: 3
       Data: 4
-    - Name: $v
-      Entry: 7
-      Data: 3|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
-    - Name: BaseValue
-      Entry: 4
-      Data: 1
-    - Name: FlatValuePerLevel
-      Entry: 4
-      Data: -0.05
-    - Name: FactorValuePerLevel
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 5
-    - Name: $v
-      Entry: 7
-      Data: 4|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
-    - Name: BaseValue
-      Entry: 4
-      Data: 20
-    - Name: FlatValuePerLevel
-      Entry: 4
-      Data: 1
-    - Name: FactorValuePerLevel
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 6
-    - Name: $v
-      Entry: 7
-      Data: 5|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
-    - Name: BaseValue
-      Entry: 4
-      Data: 100
-    - Name: FlatValuePerLevel
-      Entry: 4
-      Data: 10
-    - Name: FactorValuePerLevel
-      Entry: 4
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 7
     - Name: $v
       Entry: 7
       Data: 6|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
@@ -167,16 +167,160 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 8
+      Data: 5
     - Name: $v
       Entry: 7
       Data: 7|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
     - Name: BaseValue
       Entry: 4
-      Data: 50
+      Data: 1
     - Name: FlatValuePerLevel
       Entry: 4
       Data: 0
+    - Name: FactorValuePerLevel
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 6
+    - Name: $v
+      Entry: 7
+      Data: 8|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 100
+    - Name: FlatValuePerLevel
+      Entry: 4
+      Data: 1
+    - Name: FactorValuePerLevel
+      Entry: 4
+      Data: 0.01
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 7
+    - Name: $v
+      Entry: 7
+      Data: 9|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 0.1
+    - Name: FlatValuePerLevel
+      Entry: 4
+      Data: 0
+    - Name: FactorValuePerLevel
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 8
+    - Name: $v
+      Entry: 7
+      Data: 10|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 1
+    - Name: FlatValuePerLevel
+      Entry: 4
+      Data: 0
+    - Name: FactorValuePerLevel
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 9
+    - Name: $v
+      Entry: 7
+      Data: 11|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 10
+    - Name: FlatValuePerLevel
+      Entry: 4
+      Data: 1
+    - Name: FactorValuePerLevel
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 11
+    - Name: $v
+      Entry: 7
+      Data: 12|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 10
+    - Name: FlatValuePerLevel
+      Entry: 4
+      Data: 1
+    - Name: FactorValuePerLevel
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 12
+    - Name: $v
+      Entry: 7
+      Data: 13|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
+    - Name: BaseValue
+      Entry: 4
+      Data: 2
+    - Name: FlatValuePerLevel
+      Entry: 4
+      Data: 0.1
     - Name: FactorValuePerLevel
       Entry: 4
       Data: 0
@@ -192,5 +336,5 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  Type: 1
-  Prefab: {fileID: 5900254958730229012, guid: cc000dbc48faf7245ae511a8e2b24c86, type: 3}
+  Type: 0
+  Prefab: {fileID: 5807400234302160941, guid: fc4af171d60a45a448c233cba05ba6eb, type: 3}

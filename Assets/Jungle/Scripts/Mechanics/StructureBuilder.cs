@@ -6,49 +6,59 @@ using UnityEngine;
 
 namespace Jungle.Scripts.Mechanics
 {
-    [CreateAssetMenu(menuName = "Create StructureBuilder", fileName = "New StructureBuilder", order = 0)]
-    public class StructureBuilder : ScriptableObject
+    public class StructureBuilder
     {
-        public LayerMask StructureLayer;
-        public float GridSnappingDistance = 0.5f;
-        public List<StructureConfig> AvailableStructures = new List<StructureConfig>();
+        public StructureBuilderConfig StructureBuilderConfig;
 
         public List<StructureEntity> StructuresBuilt = new List<StructureEntity>();
-
         private ITimerManager timerManager;
+        private Player player;
 
-        public void Initialize(ITimerManager timerManager)
+        public StructureBuilder(StructureBuilderConfig structureBuilderConfig, ITimerManager timerManager, Player player)
         {
             this.timerManager = timerManager;
+            this.player = player;
+            StructureBuilderConfig = structureBuilderConfig;
             ScreenToWorldInfo.Instance.On3DHit += OnTryToBuild;
         }
 
         private void OnTryToBuild(RaycastHit hitinfo)
         {
+            float buildCost = StructureBuilderConfig.AvailableStructures[0].LevelAttributes[EntityAttribute.Cost]
+                .GetValueForLevel(0);
+            if (player.Money > buildCost)
+            {
+                player.Money -= Mathf.FloorToInt(buildCost);
+            }
+            else
+            {
+                return;
+            }
+            
             Vector3 pointSnappedToGrid = SnapToGridKeepY(hitinfo.point);
-            Collider[] colliders = Physics.OverlapBox(pointSnappedToGrid, Vector3.one * (GridSnappingDistance * 0.25f), Quaternion.identity, StructureLayer);
+            Collider[] colliders = Physics.OverlapBox(pointSnappedToGrid, 
+                Vector3.one * (StructureBuilderConfig.GridSnappingDistance * 0.4f), Quaternion.identity, 
+                StructureBuilderConfig.StructureLayer, QueryTriggerInteraction.Collide);
 
             if (colliders.Length != 0) return;
             
-            StructureEntity newStructure = Instantiate(AvailableStructures[0].Prefab, pointSnappedToGrid, Quaternion.identity);
-            newStructure.Initialize(AvailableStructures[0], 1, timerManager);
+            StructureEntity newStructure = Object.Instantiate(StructureBuilderConfig.AvailableStructures[0].Prefab, pointSnappedToGrid, Quaternion.identity);
+            newStructure.Initialize(StructureBuilderConfig.AvailableStructures[0], 1, timerManager);
         }
 
         public Vector3 SnapToGrid(Vector3 position)
         {
-            // Arredonde cada componente do ponto de entrada para o múltiplo mais próximo de 'gridSpacing'.
-            float x = Mathf.Round(position.x / GridSnappingDistance) * GridSnappingDistance;
-            float y = Mathf.Round(position.y / GridSnappingDistance) * GridSnappingDistance;
-            float z = Mathf.Round(position.z / GridSnappingDistance) * GridSnappingDistance;
+            float x = Mathf.Round(position.x / StructureBuilderConfig.GridSnappingDistance) * StructureBuilderConfig.GridSnappingDistance;
+            float y = Mathf.Round(position.y / StructureBuilderConfig.GridSnappingDistance) * StructureBuilderConfig.GridSnappingDistance;
+            float z = Mathf.Round(position.z / StructureBuilderConfig.GridSnappingDistance) * StructureBuilderConfig.GridSnappingDistance;
 
             return new Vector3(x, y, z);
         }
         
         public Vector3 SnapToGridKeepY(Vector3 position)
         {
-            // Arredonde cada componente do ponto de entrada para o múltiplo mais próximo de 'gridSpacing'.
-            float x = Mathf.Round(position.x / GridSnappingDistance) * GridSnappingDistance;
-            float z = Mathf.Round(position.z / GridSnappingDistance) * GridSnappingDistance;
+            float x = Mathf.Round(position.x / StructureBuilderConfig.GridSnappingDistance) * StructureBuilderConfig.GridSnappingDistance;
+            float z = Mathf.Round(position.z / StructureBuilderConfig.GridSnappingDistance) * StructureBuilderConfig.GridSnappingDistance;
 
             return new Vector3(x, position.y, z);
         }

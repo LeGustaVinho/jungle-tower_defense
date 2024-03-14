@@ -9,7 +9,6 @@ namespace Jungle.Scripts.Entities
 {
     public class NpcEntity : Entity, IPoolable
     {
-        public Npc Npc;
         [SerializeField] private TargetSystem targetSystem;
         [SerializeField] private NavMeshAgent NavMeshAgent;
 
