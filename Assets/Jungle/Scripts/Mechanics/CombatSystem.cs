@@ -116,24 +116,31 @@ namespace Jungle.Scripts.Mechanics
             
             if(!IsEnable) return;
 
-            List<Entity> nearbyTargets = targetSystem.FindEntitiesInAreaRadius<Entity>(self.Position, self.Attributes[EntityAttribute.Range]);
-            Entity closestTarget = TargetSystem.FindNearestEntityToPoint(nearbyTargets, self.Position);
-
-            if (closestTarget != null)
+            try
             {
-                if (scanTargetTimer != null)
+                List<Entity> nearbyTargets = targetSystem.FindEntitiesInAreaRadius<Entity>(self.Position, self.Attributes[EntityAttribute.Range]);
+                Entity closestTarget = TargetSystem.FindNearestEntityToPoint(nearbyTargets, self.Position);
+                
+                if (closestTarget != null)
                 {
-                    timerManager.AbortTimer(scanTargetTimer);
-                    scanTargetTimer = null;
-                }
+                    if (scanTargetTimer != null)
+                    {
+                        timerManager.AbortTimer(scanTargetTimer);
+                        scanTargetTimer = null;
+                    }
 
-                AttackTarget(closestTarget);
-                return;
-            }
+                    AttackTarget(closestTarget);
+                    return;
+                }
             
-            if (IsEnable && nearbyTargets.Count == 0)
+                if (IsEnable && nearbyTargets.Count == 0)
+                {
+                    scanTargetTimer = timerManager.SetTimer(self.Attributes[EntityAttribute.ScanTargetInterval], ScanForTargets);
+                }
+            }
+            catch (Exception e)
             {
-                scanTargetTimer = timerManager.SetTimer(self.Attributes[EntityAttribute.ScanTargetInterval], ScanForTargets);
+                Debug.LogException(e);
             }
         }
     }

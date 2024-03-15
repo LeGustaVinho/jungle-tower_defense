@@ -42,6 +42,16 @@ namespace Jungle.Scripts.Entities
             levelText.text = level.ToString();
         }
 
+        public void Enable()
+        {
+            CombatSystemComponent.Enable();
+        }
+        
+        public void Disable()
+        {
+            CombatSystemComponent.Disable();
+        }
+
         public void Upgrade()
         {
             Level++;
@@ -55,7 +65,7 @@ namespace Jungle.Scripts.Entities
 
         protected override void OnDestroy()
         {
-            CombatSystemComponent.Disable();
+            CombatSystemComponent?.Disable();
         }
     }
 }

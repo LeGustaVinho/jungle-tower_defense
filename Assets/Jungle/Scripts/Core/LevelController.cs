@@ -20,9 +20,9 @@ namespace Jungle.Scripts.Core
         private LevelConfig levelConfig;
         private ITimerManager timerManager;
 
-        private BoxCollider spawnerArea;
+        public BoxCollider SpawnerArea { private set; get; }
         private GoalTriggerDispatcher goalTriggerDispatcher;
-        private BoxCollider goalCollider;
+        public BoxCollider GoalCollider { private set; get; }
 
         [ShowInInspector]
         private bool isActive;
@@ -40,11 +40,11 @@ namespace Jungle.Scripts.Core
         {
             this.levelConfig = levelConfig;
             this.timerManager = timerManager;
-            this.spawnerArea = spawnerArea;
+            this.SpawnerArea = spawnerArea;
             this.goalTriggerDispatcher = goalTriggerDispatcher;
             this.player = player;
 
-            goalCollider = goalTriggerDispatcher.GetComponent<BoxCollider>();
+            GoalCollider = goalTriggerDispatcher.GetComponent<BoxCollider>();
             goalTriggerDispatcher.OnTriggerEnterEvent += OnGoalTriggerEnter;
             player.OnLoseGame += StopLevel;
         }
@@ -52,6 +52,7 @@ namespace Jungle.Scripts.Core
         [Button]
         public void StartPreparationTime()
         {
+            player.Reset();
             levelTimer = timerManager.SetTimer(levelConfig.PreparationTime, StartLevel);
             OnStartGame?.Invoke(Level);
         }
@@ -94,8 +95,6 @@ namespace Jungle.Scripts.Core
         {
             return LevelTime;
         }
-        
-        
 
         private void StartNextLevel()
         {
@@ -108,8 +107,8 @@ namespace Jungle.Scripts.Core
         {
             RandomWeightNpcConfig randomNpcConfig = levelConfig.SpawnChance.GetRandomWeight();
             
-            Vector3 randomSpawnPoint = spawnerArea.bounds.RandomInsideBox();
-            Vector3 randomTargetPoint = goalCollider.bounds.RandomInsideBox();
+            Vector3 randomSpawnPoint = SpawnerArea.bounds.RandomInsideBox();
+            Vector3 randomTargetPoint = GoalCollider.bounds.RandomInsideBox();
             NpcEntity newNpc = Pool.Instantiate(randomNpcConfig.Config.Prefab, randomSpawnPoint, 
                 Quaternion.LookRotation(randomTargetPoint - randomSpawnPoint));
             

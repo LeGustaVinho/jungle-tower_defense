@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Jungle.Scripts.Core;
 using Jungle.Scripts.Entities;
 using Jungle.Scripts.UI;
 using LegendaryTools;
 using LegendaryTools.Input;
 using Sirenix.OdinInspector;
+using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Jungle.Scripts.Mechanics
 {
@@ -22,6 +25,7 @@ namespace Jungle.Scripts.Mechanics
         private Player player;
         private LevelController levelController;
         private ScreenController screenController;
+        private NavMeshSurface navMeshSurface;
 
         [ShowInInspector]
         private StructureConfig selectedStructureConfig;
@@ -39,6 +43,7 @@ namespace Jungle.Scripts.Mechanics
             this.structureBuilderRaycaster = structureBuilderRaycaster;
             this.structureUpgradeRaycaster = structureUpgradeRaycaster;
             this.structureDestroyRaycaster = structureDestroyRaycaster;
+            navMeshSurface = Object.FindObjectOfType<NavMeshSurface>();
             
             structureBuilderRaycaster.On3DHit += OnTryToBuild;
             structureUpgradeRaycaster.On3DHit += OnTryToUpgrade;
@@ -67,6 +72,7 @@ namespace Jungle.Scripts.Mechanics
             {
                 Object.Destroy(structure.gameObject);
             }
+            StructuresBuilt.Clear();
         }
 
         private void OnTryToUpgrade(RaycastHit hitinfo)
@@ -133,7 +139,33 @@ namespace Jungle.Scripts.Mechanics
             
             StructureEntity newStructure = Object.Instantiate(selectedStructureConfig.Prefab, pointSnappedToGrid, Quaternion.identity);
             newStructure.Initialize(selectedStructureConfig, 1, timerManager);
-            StructuresBuilt.Add(newStructure);
+
+            structureBuilderRaycaster.CanInput = false;
+            MonoBehaviourFacade.Instance.StartCoroutine(CheckNavMeshPathBlocking(newStructure));
+        }
+
+        private IEnumerator CheckNavMeshPathBlocking(StructureEntity newStructure)
+        {
+            //Wait for NavMesh rebuild
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+            
+            Vector3 randomSpawnPoint = levelController.SpawnerArea.bounds.RandomInsideBox();
+            Vector3 randomTargetPoint = levelController.GoalCollider.bounds.RandomInsideBox();
+            
+            NavMeshPath path = new NavMeshPath();
+            NavMesh.CalculatePath(randomSpawnPoint, randomTargetPoint, NavMesh.AllAreas, path);
+
+            if (path.status == NavMeshPathStatus.PathComplete)
+            {
+                newStructure.Enable();
+                StructuresBuilt.Add(newStructure);
+            }
+            else
+            {
+                Object.Destroy(newStructure.gameObject);
+            }
+            structureBuilderRaycaster.CanInput = true;
         }
         
         private void OnStructureSelect(StructureConfig structureConfig)

@@ -75,6 +75,7 @@ namespace Jungle.Scripts.UI
             inGameScreen.gameObject.SetActive(false);
             
             inGameScreen.SetTimeGetter(null);
+            levelController.StopLevel();
         }
 
         private void OnChangeHealthPoints(int hp)

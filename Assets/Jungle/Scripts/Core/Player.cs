@@ -75,8 +75,9 @@ namespace Jungle.Scripts.Core
 
         public void Reset()
         {
-            currentHealthPoint = PlayerConfig.StartingHealthPoints;
-            money = PlayerConfig.StartingMoney;
+            CurrentHealthPoint = PlayerConfig.StartingHealthPoints;
+            Money = PlayerConfig.StartingMoney;
+            Points = 0;
         }
     }
 }
