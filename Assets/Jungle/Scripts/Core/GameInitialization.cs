@@ -1,11 +1,8 @@
-using System;
-using Jungle.Scripts.Entities;
 using Jungle.Scripts.Mechanics;
 using Jungle.Scripts.UI;
 using LegendaryTools.Input;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Jungle.Scripts.Core
 {
@@ -38,13 +35,13 @@ namespace Jungle.Scripts.Core
         [SerializeField] private InGameScreen inGameScreen;
 
         [ShowInInspector][BoxGroup("Systems")]
-        private LevelController levelController;
+        private ILevelController levelController;
         
         [ShowInInspector][BoxGroup("Systems")]
         private ITimerManager timerManager;
         
         [ShowInInspector][BoxGroup("Systems")]
-        private Player player;
+        private IPlayer player;
         
         [ShowInInspector][BoxGroup("Systems")]
         private StructureBuilder structureBuilder;

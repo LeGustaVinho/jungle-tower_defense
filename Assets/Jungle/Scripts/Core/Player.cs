@@ -1,14 +1,25 @@
 using System;
 using Sirenix.OdinInspector;
-using UnityEngine;
 
 namespace Jungle.Scripts.Core
 {
-    [Serializable]
-    public class Player
+    public interface IPlayer
     {
-        public PlayerConfig PlayerConfig;
-        
+        PlayerConfig Config { get; }
+        int CurrentHealthPoint { get; set; }
+        int Points { get; set; }
+        float Money { get; set; }
+        event Action<int> OnChangeHealthPoints;
+        event Action<float> OnChangeMoney;
+        event Action<int> OnChangePoints;
+        event Action OnLoseGame;
+        void Reset();
+    }
+
+    public class Player : IPlayer
+    {
+        public PlayerConfig Config { private set; get; }
+
         [ShowInInspector]
         public int CurrentHealthPoint
         {
@@ -68,15 +79,15 @@ namespace Jungle.Scripts.Core
 
         public Player(PlayerConfig playerConfig)
         {
-            PlayerConfig = playerConfig;
+            Config = playerConfig;
 
             Reset();
         }
 
         public void Reset()
         {
-            CurrentHealthPoint = PlayerConfig.StartingHealthPoints;
-            Money = PlayerConfig.StartingMoney;
+            CurrentHealthPoint = Config.StartingHealthPoints;
+            Money = Config.StartingMoney;
             Points = 0;
         }
     }

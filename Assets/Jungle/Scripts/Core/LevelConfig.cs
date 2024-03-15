@@ -18,10 +18,6 @@ namespace Jungle.Scripts.Core
     [CreateAssetMenu(menuName = "Jungle/Create LevelConfig", fileName = "New LevelConfig")]
     public class LevelConfig : SerializedScriptableObject
     {
-        public StructureEntity StructurePrefab;
-
-        public EntityConfig EntityConfig;
-
         public List<RandomWeightNpcConfig> SpawnChance = new List<RandomWeightNpcConfig>();
 
         [SuffixLabel("seconds")]

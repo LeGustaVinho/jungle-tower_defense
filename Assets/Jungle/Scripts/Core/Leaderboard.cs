@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using LegendaryTools;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
-using UnityEngine;
 
 namespace Jungle.Scripts.Core
 {
@@ -28,12 +27,12 @@ namespace Jungle.Scripts.Core
 
         [ShowInInspector]
         private UnityFilePath leaderBoardFilePath;
-        private Player player;
-        private LevelController levelController;
+        private readonly IPlayer player;
+        private readonly ILevelController levelController;
 
         public event Action<List<LeaderboardEntry>> OnLeaderboardUpdate;
 
-        public Leaderboard(Player player, LevelController levelController)
+        public Leaderboard(IPlayer player, ILevelController levelController)
         {
             this.player = player;
             this.levelController = levelController;
@@ -57,14 +56,14 @@ namespace Jungle.Scripts.Core
         }
 
         [Button]
-        public void Save()
+        private void Save()
         {
             string json = JsonConvert.SerializeObject(LeaderboardEntries, Formatting.Indented);
             System.IO.File.WriteAllText(leaderBoardFilePath.Path, json);
         }
 
         [Button]
-        public void Load()
+        private void Load()
         {
             if (System.IO.File.Exists(leaderBoardFilePath.Path))
             {

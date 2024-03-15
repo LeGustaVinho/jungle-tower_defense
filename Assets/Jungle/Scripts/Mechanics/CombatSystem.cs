@@ -7,8 +7,20 @@ using UnityEngine;
 
 namespace Jungle.Scripts.Mechanics
 {
+    public interface ICombatSystem
+    {
+        event Action<Entity, Entity> OnTakeDamage;
+        event Action<Entity, Entity> OnDoDamage;
+        event Action<Entity, Entity> OnDie;
+        bool IsEnable { get; }
+        void Enable();
+        void Disable();
+        void AttackTarget(Entity target);
+        void ReceiveDamage(float damageToReceive, Entity source);
+    }
+
     [Serializable]
-    public class CombatSystem
+    public class CombatSystem : ICombatSystem
     {
         public event Action<Entity, Entity> OnTakeDamage;
         public event Action<Entity, Entity> OnDoDamage;
@@ -55,29 +67,7 @@ namespace Jungle.Scripts.Mechanics
                 scanTargetTimer = null;
             }
         }
-
-        public void ReceiveDamage(float damageToReceive, Entity source)
-        {
-            if (self.Attributes[EntityAttribute.HealthPoints] - damageToReceive <= 0)
-            {
-                self.Attributes[EntityAttribute.HealthPoints] = 0;
-                OnDie?.Invoke(self, source);
-            }
-            else
-            {
-                self.Attributes[EntityAttribute.HealthPoints] -= damageToReceive;
-                OnTakeDamage?.Invoke(self, source);
-            }
-        }
         
-        public void DoDamage(Entity target, float damageToDo)
-        {
-            if (!target.IsAlive || !target.gameObject.activeInHierarchy) return;
-            
-            target.CombatSystemComponent.ReceiveDamage(damageToDo, self);
-            OnDoDamage?.Invoke(self, target);
-        }
-
         public void AttackTarget(Entity target)
         {
             if (!IsEnable)
@@ -106,7 +96,29 @@ namespace Jungle.Scripts.Mechanics
             attackTargetTimer = timerManager.SetTimer(self.Attributes[EntityAttribute.AttackSpeed], () => AttackTarget(target)); //Wait until attack is available and attack same target
         }
 
-        public void ScanForTargets()
+        public void ReceiveDamage(float damageToReceive, Entity source)
+        {
+            if (self.Attributes[EntityAttribute.HealthPoints] - damageToReceive <= 0)
+            {
+                self.Attributes[EntityAttribute.HealthPoints] = 0;
+                OnDie?.Invoke(self, source);
+            }
+            else
+            {
+                self.Attributes[EntityAttribute.HealthPoints] -= damageToReceive;
+                OnTakeDamage?.Invoke(self, source);
+            }
+        }
+        
+        private void DoDamage(Entity target, float damageToDo)
+        {
+            if (!target.IsAlive || !target.gameObject.activeInHierarchy) return;
+            
+            target.CombatSystemComponent.ReceiveDamage(damageToDo, self);
+            OnDoDamage?.Invoke(self, target);
+        }
+
+        private void ScanForTargets()
         {
             if (attackTargetTimer != null)
             {

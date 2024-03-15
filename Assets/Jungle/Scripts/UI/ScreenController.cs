@@ -8,8 +8,8 @@ namespace Jungle.Scripts.UI
 {
     public class ScreenController
     {
-        private Player player;
-        private LevelController levelController;
+        private IPlayer player;
+        private ILevelController levelController;
         private StartScreen startScreen;
         private InGameScreen inGameScreen;
         private StructureBuilderConfig structureBuilderConfig;
@@ -21,7 +21,7 @@ namespace Jungle.Scripts.UI
             remove => inGameScreen.OnStructureSelect -= value;
         }
 
-        public ScreenController(Player player, LevelController levelController, StartScreen startScreen, 
+        public ScreenController(IPlayer player, ILevelController levelController, StartScreen startScreen, 
             InGameScreen inGameScreen, StructureBuilderConfig structureBuilderConfig, Leaderboard leaderboard)
         {
             this.player = player;
@@ -59,7 +59,7 @@ namespace Jungle.Scripts.UI
             startScreen.gameObject.SetActive(false);
             inGameScreen.gameObject.SetActive(true);
             
-            inGameScreen.UpdateHealth(player.CurrentHealthPoint, player.PlayerConfig.StartingHealthPoints);
+            inGameScreen.UpdateHealth(player.CurrentHealthPoint, player.Config.StartingHealthPoints);
             inGameScreen.UpdatePoints(player.Points);
             inGameScreen.UpdateMoney(player.Money);
             inGameScreen.UpdateLevel(1);
@@ -80,7 +80,7 @@ namespace Jungle.Scripts.UI
 
         private void OnChangeHealthPoints(int hp)
         {
-            inGameScreen.UpdateHealth(hp, player.PlayerConfig.StartingHealthPoints);
+            inGameScreen.UpdateHealth(hp, player.Config.StartingHealthPoints);
         }
 
         private void OnChangePoints(int points)

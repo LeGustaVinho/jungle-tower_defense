@@ -4,6 +4,6 @@ namespace Jungle.Scripts.Entities
 {
     public interface ICombatable
     {
-        public CombatSystem CombatSystemComponent { get; }
+        public ICombatSystem CombatSystemComponent { get; }
     }
 }

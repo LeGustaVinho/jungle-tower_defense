@@ -8,21 +8,35 @@ using UnityEngine;
 
 namespace Jungle.Scripts.Core
 {
-    public class LevelController
+    public interface ILevelController
+    {
+        int Level { get; }
+        BoxCollider SpawnerArea { get; }
+        BoxCollider GoalCollider { get; }
+        event Action<int> OnChangeLevel;
+        event Action<int> OnStartGame;
+        event Action<int> OnFinishGame;
+        void StartPreparationTime();
+        void StartLevel();
+        void StopLevel();
+        float GetLevelTime();
+    }
+
+    public class LevelController : ILevelController
     {
         [ShowInInspector] 
         public int Level { get; private set; }
+        public BoxCollider SpawnerArea { private set; get; }
+        public BoxCollider GoalCollider { private set; get; }
         
         public event Action<int> OnChangeLevel;
         public event Action<int> OnStartGame;
         public event Action<int> OnFinishGame;
         
-        private LevelConfig levelConfig;
-        private ITimerManager timerManager;
-
-        public BoxCollider SpawnerArea { private set; get; }
+        private readonly LevelConfig levelConfig;
+        private readonly ITimerManager timerManager;
+        private readonly IPlayer player;
         private GoalTriggerDispatcher goalTriggerDispatcher;
-        public BoxCollider GoalCollider { private set; get; }
 
         [ShowInInspector]
         private bool isActive;
@@ -33,10 +47,9 @@ namespace Jungle.Scripts.Core
 
         private Timer spawnNpcTimer;
         private Timer levelTimer;
-        private Player player;
 
         public LevelController(LevelConfig levelConfig, ITimerManager timerManager, BoxCollider spawnerArea, 
-            GoalTriggerDispatcher goalTriggerDispatcher, Player player)
+            GoalTriggerDispatcher goalTriggerDispatcher, IPlayer player)
         {
             this.levelConfig = levelConfig;
             this.timerManager = timerManager;
