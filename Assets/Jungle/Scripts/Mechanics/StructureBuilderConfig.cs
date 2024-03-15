@@ -9,6 +9,7 @@ namespace Jungle.Scripts.Mechanics
     {
         public LayerMask StructureLayer;
         public float GridSnappingDistance = 0.5f;
+        public float StructureDestroyRefundFactor = 0.5f;
         public List<StructureConfig> AvailableStructures = new List<StructureConfig>();
     }
 }

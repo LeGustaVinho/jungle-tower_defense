@@ -42,6 +42,18 @@ namespace Jungle.Scripts.Mechanics
         public void Disable()
         {
             IsEnable = false;
+            
+            if (attackTargetTimer != null)
+            {
+                timerManager.AbortTimer(attackTargetTimer);
+                attackTargetTimer = null;
+            }
+            
+            if (scanTargetTimer != null)
+            {
+                timerManager.AbortTimer(scanTargetTimer);
+                scanTargetTimer = null;
+            }
         }
 
         public void ReceiveDamage(float damageToReceive, Entity source)

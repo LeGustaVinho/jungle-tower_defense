@@ -1,4 +1,8 @@
-﻿using Jungle.Scripts.Core;
+﻿using System;
+using System.Collections.Generic;
+using Jungle.Scripts.Core;
+using Jungle.Scripts.Entities;
+using Jungle.Scripts.Mechanics;
 
 namespace Jungle.Scripts.UI
 {
@@ -8,13 +12,24 @@ namespace Jungle.Scripts.UI
         private LevelController levelController;
         private StartScreen startScreen;
         private InGameScreen inGameScreen;
+        private StructureBuilderConfig structureBuilderConfig;
+        private Leaderboard leaderboard;
+        
+        public event Action<StructureConfig> OnStructureSelect
+        {
+            add => inGameScreen.OnStructureSelect += value;
+            remove => inGameScreen.OnStructureSelect -= value;
+        }
 
-        public ScreenController(Player player, LevelController levelController, StartScreen startScreen, InGameScreen inGameScreen)
+        public ScreenController(Player player, LevelController levelController, StartScreen startScreen, 
+            InGameScreen inGameScreen, StructureBuilderConfig structureBuilderConfig, Leaderboard leaderboard)
         {
             this.player = player;
             this.levelController = levelController;
             this.startScreen = startScreen;
             this.inGameScreen = inGameScreen;
+            this.structureBuilderConfig = structureBuilderConfig;
+            this.leaderboard = leaderboard;
 
             player.OnChangeMoney += OnChangeMoney;
             player.OnChangePoints += OnChangePoints;
@@ -22,9 +37,16 @@ namespace Jungle.Scripts.UI
             player.OnLoseGame += OnLoseGame;
 
             startScreen.OnClickStart += OnClickStartGame;
+            startScreen.UpdateLeaderBoard(this.leaderboard.LeaderboardEntries);
             inGameScreen.OnClickQuit += OnClickQuitGame;
 
             levelController.OnChangeLevel += OnChangedLevel;
+            leaderboard.OnLeaderboardUpdate += OnLeaderboardUpdate;
+        }
+
+        private void OnLeaderboardUpdate(List<LeaderboardEntry> leaderboardEntries)
+        {
+            startScreen.UpdateLeaderBoard(leaderboardEntries);
         }
 
         private void OnChangedLevel(int level)
@@ -41,12 +63,18 @@ namespace Jungle.Scripts.UI
             inGameScreen.UpdatePoints(player.Points);
             inGameScreen.UpdateMoney(player.Money);
             inGameScreen.UpdateLevel(1);
+            inGameScreen.SetTimeGetter(levelController.GetLevelTime);
+            inGameScreen.GenerateStructureUI(structureBuilderConfig.AvailableStructures);
+            
+            levelController.StartPreparationTime();
         }
         
         private void OnClickQuitGame()
         {
             startScreen.gameObject.SetActive(true);
             inGameScreen.gameObject.SetActive(false);
+            
+            inGameScreen.SetTimeGetter(null);
         }
 
         private void OnChangeHealthPoints(int hp)

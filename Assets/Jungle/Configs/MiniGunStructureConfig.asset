@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40cb2cc274064ecf9af0c65c39de3e7d, type: 3}
-  m_Name: DefaultStructureConfig
+  m_Name: MiniGunStructureConfig
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -53,7 +53,7 @@ MonoBehaviour:
       Data: 2|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
     - Name: BaseValue
       Entry: 4
-      Data: 10
+      Data: 1
     - Name: FlatValuePerLevel
       Entry: 4
       Data: 1
@@ -77,10 +77,10 @@ MonoBehaviour:
       Data: 3|Jungle.Scripts.Core.SimpleAttribute, Assembly-CSharp
     - Name: BaseValue
       Entry: 4
-      Data: 1
+      Data: 0.1
     - Name: FlatValuePerLevel
       Entry: 4
-      Data: -0.05
+      Data: 0
     - Name: FactorValuePerLevel
       Entry: 4
       Data: 0
@@ -241,7 +241,7 @@ MonoBehaviour:
       Entry: 8
       Data: 
   Type: 1
-  DisplayName: Default
+  DisplayName: Mini Gun
   Prefab: {fileID: 5900254958730229012, guid: cc000dbc48faf7245ae511a8e2b24c86, type: 3}
   ProjectilePrefab: {fileID: 6508720899181066925, guid: 14e3e5a23e6890b4cb63bc1197660bbf, type: 3}
   TargetSystem: {fileID: 11400000, guid: 8561ac09a6af42a44ab607ac95d3b998, type: 2}

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36bf7dd6a6ad4bdf98554fc48d7332f7, type: 3}
-  m_Name: DefaultLevelConfig
+  m_Name: LevelConfig
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -30,5 +30,6 @@ MonoBehaviour:
     Config: {fileID: 11400000, guid: f0b9ffb804435154ebae2e74c62686f3, type: 2}
   - weight: 0.3333
     Config: {fileID: 11400000, guid: f0b9ffb804435154ebae2e74c62686f3, type: 2}
-  RoundTime: 5
+  PreparationTime: 10
+  RoundTime: 10
   SpawnInterval: 0.5

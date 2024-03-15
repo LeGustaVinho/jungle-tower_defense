@@ -18,3 +18,5 @@ MonoBehaviour:
   GridSnappingDistance: 2.5
   AvailableStructures:
   - {fileID: 11400000, guid: f537d26c474695b48895aac2589ff62c, type: 2}
+  - {fileID: 11400000, guid: 854cbf12b6486174fa0be95ee4b39ef7, type: 2}
+  - {fileID: 11400000, guid: 51fd7d45eb052c64fb15216c325168bd, type: 2}

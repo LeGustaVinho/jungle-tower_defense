@@ -11,27 +11,34 @@ namespace Jungle.Scripts.Entities
 {
     public class StructureEntity : Entity
     {
-        [SerializeField][BoxGroup("Structure")]
+        [SerializeField] [BoxGroup("Structure")]
         private Transform ProjectileStartPoint;
 
-        [ShowInInspector][BoxGroup("Structure")]
+        [ShowInInspector]
+        [BoxGroup("Structure")]
         public StructureConfig structureConfig { private set; get; }
-        
-        [SerializeField][BoxGroup("Structure")]
+
+        [SerializeField] [BoxGroup("Structure")]
         private TextMeshProUGUI levelText;
+
+        [SerializeField] [BoxGroup("Structure")]
+        private TextMeshProUGUI nameText;
 
         public override void Initialize(EntityConfig config, int level, ITimerManager timerManager)
         {
             base.Initialize(config, level, timerManager);
-            
+
             structureConfig = config as StructureConfig;
-            
+
             IProjectileSystem projectileSystem =
-                new ProjectileSystem(structureConfig.ProjectilePrefab, ProjectileStartPoint.position, Attributes[EntityAttribute.ProjectileSpeed]);
-            
-            CombatSystemComponent = new CombatSystem(this, timerManager, structureConfig.TargetSystem, projectileSystem);
+                new ProjectileSystem(structureConfig.ProjectilePrefab, ProjectileStartPoint.position,
+                    Attributes[EntityAttribute.ProjectileSpeed]);
+
+            CombatSystemComponent =
+                new CombatSystem(this, timerManager, structureConfig.TargetSystem, projectileSystem);
             CombatSystemComponent.Enable();
 
+            nameText.text = structureConfig.DisplayName;
             levelText.text = level.ToString();
         }
 
@@ -44,6 +51,11 @@ namespace Jungle.Scripts.Entities
             {
                 Attributes.Add(pair.Key, pair.Value.GetValueForLevel(Level));
             }
+        }
+
+        protected override void OnDestroy()
+        {
+            CombatSystemComponent.Disable();
         }
     }
 }

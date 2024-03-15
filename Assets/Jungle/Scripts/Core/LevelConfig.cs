@@ -25,6 +25,9 @@ namespace Jungle.Scripts.Core
         public List<RandomWeightNpcConfig> SpawnChance = new List<RandomWeightNpcConfig>();
 
         [SuffixLabel("seconds")]
+        public float PreparationTime;
+        
+        [SuffixLabel("seconds")]
         public float RoundTime;
 
         [SuffixLabel("seconds")]

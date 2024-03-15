@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Jungle.Scripts.Core;
 using Jungle.Scripts.Mechanics;
 using Sirenix.OdinInspector;
@@ -15,7 +16,7 @@ namespace Jungle.Scripts.Entities
         [SerializeField] [BoxGroup("Entity")]
         private Transform Transform;
 
-        public Vector3 Position => Transform.position;
+        public Vector3 Position => Transform != null ? Transform.position : Vector3.zero;
         
         public CombatSystem CombatSystemComponent { protected set; get; }
         
@@ -40,6 +41,11 @@ namespace Jungle.Scripts.Entities
             {
                 Attributes.Add(pair.Key, pair.Value.GetValueForLevel(level));
             }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            
         }
     }
 }

@@ -19,6 +19,8 @@ namespace Jungle.Scripts.Core
         [SerializeField] private PlayerConfig playerConfig;
         
         [BoxGroup("SceneRefs")]
+        [SerializeField] private GridDrawer gridDrawer;
+        [BoxGroup("SceneRefs")]
         [SerializeField] private BoxCollider spawnerArea;
         [BoxGroup("SceneRefs")]
         [SerializeField] private GoalTriggerDispatcher goalTriggerDispatcher;
@@ -26,6 +28,8 @@ namespace Jungle.Scripts.Core
         [SerializeField] private ScreenToWorldInfo structureBuildRaycaster;
         [BoxGroup("SceneRefs")]
         [SerializeField] private ScreenToWorldInfo structureUpgradeRaycaster;
+        [BoxGroup("SceneRefs")]
+        [SerializeField] private ScreenToWorldInfo structureDestroyRaycaster;
 
         [BoxGroup("Screens")]
         [SerializeField] private StartScreen startScreen;
@@ -44,19 +48,26 @@ namespace Jungle.Scripts.Core
         
         [ShowInInspector][BoxGroup("Systems")]
         private StructureBuilder structureBuilder;
+        
+        [ShowInInspector][BoxGroup("Systems")]
+        private Leaderboard leaderboard;
 
         [BoxGroup("Systems")] 
         private ScreenController screenController;
         
         public void Start()
         {
+            gridDrawer.cellSize = structureBuilderConfig.GridSnappingDistance;
+            gridDrawer.DrawGrid();
+            
             timerManager = new TimerManager();
             player = new Player(playerConfig);
-            structureBuilder = new StructureBuilder(structureBuilderConfig,timerManager, player, 
-                structureBuildRaycaster, structureUpgradeRaycaster);
             levelController = new LevelController(levelConfig, timerManager, spawnerArea, goalTriggerDispatcher, player);
-
-            screenController = new ScreenController(player, levelController, startScreen, inGameScreen);
+            leaderboard = new Leaderboard(player, levelController);
+            screenController = new ScreenController(player, levelController, startScreen, inGameScreen, structureBuilderConfig, leaderboard);
+            structureBuilder = new StructureBuilder(structureBuilderConfig,timerManager, 
+                player, levelController, screenController,
+                structureBuildRaycaster, structureUpgradeRaycaster, structureDestroyRaycaster);
             
             timerManager.Initialize();
         }

@@ -1,13 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using Jungle.Scripts.Entities;
+using LegendaryTools;
+using LegendaryTools.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Jungle.Scripts.UI
 {
+    [Serializable]
+    public class StructureListing : GameObjectListing<UIStructure, StructureConfig>
+    {
+    }
+    
     public class InGameScreen : MonoBehaviour
     {
         public event Action OnClickQuit;
+        public event Action<StructureConfig> OnStructureSelect;
         
         [SerializeField] private TextMeshProUGUI PointsText;
         [SerializeField] private TextMeshProUGUI MoneyText;
@@ -20,10 +30,32 @@ namespace Jungle.Scripts.UI
         [SerializeField] private string MoneyFormat;
         [SerializeField] private string LevelFormat;
         [SerializeField] private string TimerFormat;
+        [SerializeField] private string TimerTimeSpanFormat;
         [SerializeField] private string HealthFormat;
         
         [SerializeField] private Button QuitButton;
-        
+
+        [SerializeField] private ToggleGroup structureToggleGroup;
+        [SerializeField] private StructureListing StructureListing;
+
+        private Func<float> timerGetter;
+
+        public void GenerateStructureUI(List<StructureConfig> structureConfigs)
+        {
+            foreach (UIStructure uiStructure in StructureListing.Listing)
+            {
+                uiStructure.OnToggleChange -= OnStructureToggleChange;
+            }
+            
+            StructureListing.GenerateList(structureConfigs.ToArray());
+
+            foreach (UIStructure uiStructure in StructureListing.Listing)
+            {
+                uiStructure.Toggle.group = structureToggleGroup;
+                uiStructure.OnToggleChange += OnStructureToggleChange;
+            }
+        }
+
         public void UpdatePoints(float value)
         {
             PointsText.text = string.Format(PointsFormat, value);
@@ -38,10 +70,15 @@ namespace Jungle.Scripts.UI
         {
             LevelText.text = string.Format(LevelFormat, value);
         }
-        
-        public void UpdateTimer(float value)
+
+        public void SetTimeGetter(Func<float> timerGetter)
         {
-            TimerText.text = string.Format(TimerFormat, value);
+            this.timerGetter = timerGetter;
+        }
+        
+        public void UpdateTimer(string time)
+        {
+            TimerText.text = string.Format(TimerFormat, time);
         }
         
         public void UpdateHealth(float value, float maxValue)
@@ -56,6 +93,23 @@ namespace Jungle.Scripts.UI
         protected void Start()
         {
             QuitButton.onClick.AddListener(OnClickedQuit);
+        }
+
+        protected void Update()
+        {
+            if (timerGetter != null)
+            {
+                TimeSpan timerTimeSpan = TimeSpan.FromSeconds(timerGetter.Invoke());
+                UpdateTimer(timerTimeSpan.Beautify(TimerTimeSpanFormat));
+            }
+        }
+        
+        private void OnStructureToggleChange(UIStructure uiStructure, bool mode)
+        {
+            if (mode)
+            {
+                OnStructureSelect?.Invoke(uiStructure.StructureConfig);
+            }
         }
 
         private void OnClickedQuit()

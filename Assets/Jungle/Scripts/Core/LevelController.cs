@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Jungle.Scripts.Entities;
 using Jungle.Scripts.Mechanics;
 using LegendaryTools;
@@ -9,7 +10,12 @@ namespace Jungle.Scripts.Core
 {
     public class LevelController
     {
-        public event Action<int> OnChangeLevel; 
+        [ShowInInspector] 
+        public int Level { get; private set; }
+        
+        public event Action<int> OnChangeLevel;
+        public event Action<int> OnStartGame;
+        public event Action<int> OnFinishGame;
         
         private LevelConfig levelConfig;
         private ITimerManager timerManager;
@@ -20,11 +26,10 @@ namespace Jungle.Scripts.Core
 
         [ShowInInspector]
         private bool isActive;
+        private List<NpcEntity> activeNpcs = new List<NpcEntity>();
         
-        [ShowInInspector]
-        private int level;
-
-        [ShowInInspector] private float LevelTime => levelTimer?.Time ?? 0;
+        [ShowInInspector] 
+        private float LevelTime => levelTimer?.Time ?? 0;
 
         private Timer spawnNpcTimer;
         private Timer levelTimer;
@@ -45,9 +50,16 @@ namespace Jungle.Scripts.Core
         }
 
         [Button]
+        public void StartPreparationTime()
+        {
+            levelTimer = timerManager.SetTimer(levelConfig.PreparationTime, StartLevel);
+            OnStartGame?.Invoke(Level);
+        }
+        
+        [Button]
         public void StartLevel()
         {
-            level = 0;
+            Level = 0;
             isActive = true;
             SpawnNpc();
             
@@ -69,12 +81,27 @@ namespace Jungle.Scripts.Core
                 timerManager.AbortTimer(levelTimer);
                 levelTimer = null;
             }
+
+            foreach (NpcEntity npc in activeNpcs)
+            {
+                Pool.Destroy(npc);
+            }
+            
+            OnFinishGame?.Invoke(Level);
         }
+
+        public float GetLevelTime()
+        {
+            return LevelTime;
+        }
+        
+        
 
         private void StartNextLevel()
         {
-            level++;
+            Level++;
             levelTimer = timerManager.SetTimer(levelConfig.RoundTime, StartNextLevel);
+            OnChangeLevel?.Invoke(Level);
         }
 
         private void SpawnNpc()
@@ -86,9 +113,11 @@ namespace Jungle.Scripts.Core
             NpcEntity newNpc = Pool.Instantiate(randomNpcConfig.Config.Prefab, randomSpawnPoint, 
                 Quaternion.LookRotation(randomTargetPoint - randomSpawnPoint));
             
-            newNpc.Initialize(randomNpcConfig.Config, level, timerManager);
+            newNpc.Initialize(randomNpcConfig.Config, Level, timerManager);
             newNpc.SetAgentTarget(randomTargetPoint);
             newNpc.CombatSystemComponent.OnDie += OnNpcDie;
+            
+            activeNpcs.Add(newNpc);
 
             if (isActive)
             {
@@ -105,6 +134,7 @@ namespace Jungle.Scripts.Core
         private void OnNpcDie(Entity killed, Entity killer)
         {
             killed.CombatSystemComponent.OnDie -= OnNpcDie;
+            activeNpcs.Remove(killed as NpcEntity);
             Pool.Destroy(killed);
             player.Points += (int)killed.Attributes[EntityAttribute.Points];
             player.Money += (int)killed.Attributes[EntityAttribute.Money];

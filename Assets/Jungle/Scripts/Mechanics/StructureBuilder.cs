@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using Jungle.Scripts.Core;
 using Jungle.Scripts.Entities;
+using Jungle.Scripts.UI;
+using LegendaryTools;
 using LegendaryTools.Input;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Jungle.Scripts.Mechanics
@@ -14,19 +17,56 @@ namespace Jungle.Scripts.Mechanics
 
         private ScreenToWorldInfo structureBuilderRaycaster;
         private ScreenToWorldInfo structureUpgradeRaycaster;
+        private ScreenToWorldInfo structureDestroyRaycaster;
         private ITimerManager timerManager;
         private Player player;
+        private LevelController levelController;
+        private ScreenController screenController;
+
+        [ShowInInspector]
+        private StructureConfig selectedStructureConfig;
 
         public StructureBuilder(StructureBuilderConfig structureBuilderConfig, ITimerManager timerManager, 
-            Player player, ScreenToWorldInfo structureBuilderRaycaster, ScreenToWorldInfo structureUpgradeRaycaster)
+            Player player, LevelController levelController, ScreenController screenController,
+            ScreenToWorldInfo structureBuilderRaycaster, ScreenToWorldInfo structureUpgradeRaycaster, 
+            ScreenToWorldInfo structureDestroyRaycaster)
         {
             this.timerManager = timerManager;
             this.player = player;
+            this.levelController = levelController;
+            this.screenController = screenController;
             StructureBuilderConfig = structureBuilderConfig;
             this.structureBuilderRaycaster = structureBuilderRaycaster;
             this.structureUpgradeRaycaster = structureUpgradeRaycaster;
+            this.structureDestroyRaycaster = structureDestroyRaycaster;
+            
             structureBuilderRaycaster.On3DHit += OnTryToBuild;
             structureUpgradeRaycaster.On3DHit += OnTryToUpgrade;
+            structureDestroyRaycaster.On3DHit += OnTryToDestroy;
+
+            levelController.OnStartGame += OnStartGame;
+            levelController.OnFinishGame += OnFinishGame;
+
+            screenController.OnStructureSelect += OnStructureSelect;
+        }
+
+        private void OnStartGame(int level)
+        {
+            structureBuilderRaycaster.CanInput = true;
+            structureUpgradeRaycaster.CanInput = true;
+            structureDestroyRaycaster.CanInput = true;
+        }
+
+        private void OnFinishGame(int level)
+        {
+            structureBuilderRaycaster.CanInput = false;
+            structureUpgradeRaycaster.CanInput = false;
+            structureDestroyRaycaster.CanInput = false;
+
+            foreach (StructureEntity structure in StructuresBuilt)
+            {
+                Object.Destroy(structure.gameObject);
+            }
         }
 
         private void OnTryToUpgrade(RaycastHit hitinfo)
@@ -49,10 +89,31 @@ namespace Jungle.Scripts.Mechanics
                 return;
             }
         }
+        
+        private void OnTryToDestroy(RaycastHit hitinfo)
+        {
+            StructureEntity structureEntity = hitinfo.transform.GetComponent<StructureEntity>();
+            if (structureEntity == null)
+            {
+                return;
+            }
+
+            float refundAmount = (structureEntity.structureConfig.LevelAttributes[EntityAttribute.UpgradeCost]
+                                      .GetValueForLevel(structureEntity.Level) +
+                                  structureEntity.structureConfig.LevelAttributes[EntityAttribute.Cost]
+                                      .GetValueForLevel(1)) * StructureBuilderConfig.StructureDestroyRefundFactor;
+            player.Money += refundAmount;
+
+            StructuresBuilt.Remove(structureEntity);
+            Object.Destroy(structureEntity.gameObject);
+        }
 
         private void OnTryToBuild(RaycastHit hitinfo)
         {
-            float buildCost = StructureBuilderConfig.AvailableStructures[0].LevelAttributes[EntityAttribute.Cost]
+            if (selectedStructureConfig == null)
+                return;
+            
+            float buildCost = selectedStructureConfig.LevelAttributes[EntityAttribute.Cost]
                 .GetValueForLevel(0);
             if (player.Money > buildCost)
             {
@@ -70,20 +131,17 @@ namespace Jungle.Scripts.Mechanics
 
             if (colliders.Length != 0) return;
             
-            StructureEntity newStructure = Object.Instantiate(StructureBuilderConfig.AvailableStructures[0].Prefab, pointSnappedToGrid, Quaternion.identity);
-            newStructure.Initialize(StructureBuilderConfig.AvailableStructures[0], 1, timerManager);
-        }
-
-        public Vector3 SnapToGrid(Vector3 position)
-        {
-            float x = Mathf.Round(position.x / StructureBuilderConfig.GridSnappingDistance) * StructureBuilderConfig.GridSnappingDistance;
-            float y = Mathf.Round(position.y / StructureBuilderConfig.GridSnappingDistance) * StructureBuilderConfig.GridSnappingDistance;
-            float z = Mathf.Round(position.z / StructureBuilderConfig.GridSnappingDistance) * StructureBuilderConfig.GridSnappingDistance;
-
-            return new Vector3(x, y, z);
+            StructureEntity newStructure = Object.Instantiate(selectedStructureConfig.Prefab, pointSnappedToGrid, Quaternion.identity);
+            newStructure.Initialize(selectedStructureConfig, 1, timerManager);
+            StructuresBuilt.Add(newStructure);
         }
         
-        public Vector3 SnapToGridKeepY(Vector3 position)
+        private void OnStructureSelect(StructureConfig structureConfig)
+        {
+            selectedStructureConfig = structureConfig;
+        }
+        
+        private Vector3 SnapToGridKeepY(Vector3 position)
         {
             float x = Mathf.Round(position.x / StructureBuilderConfig.GridSnappingDistance) * StructureBuilderConfig.GridSnappingDistance;
             float z = Mathf.Round(position.z / StructureBuilderConfig.GridSnappingDistance) * StructureBuilderConfig.GridSnappingDistance;
