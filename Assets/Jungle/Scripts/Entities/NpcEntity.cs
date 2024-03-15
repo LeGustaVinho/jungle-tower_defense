@@ -5,6 +5,7 @@ using LegendaryTools;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 namespace Jungle.Scripts.Entities
 {
@@ -12,6 +13,9 @@ namespace Jungle.Scripts.Entities
     {
         [BoxGroup("Npc Entity")]
         [SerializeField] private NavMeshAgent NavMeshAgent;
+
+        [BoxGroup("Npc Entity")] [SerializeField]
+        private Image HealthBar;
         
         public override void Initialize(EntityConfig config, int level, ITimerManager timerManager)
         {
@@ -22,6 +26,20 @@ namespace Jungle.Scripts.Entities
             NavMeshAgent.speed = Attributes[EntityAttribute.Speed];
             NavMeshAgent.angularSpeed = Attributes[EntityAttribute.AngularSpeed];
             NavMeshAgent.acceleration = Attributes[EntityAttribute.Acceleration];
+
+            CombatSystemComponent.OnTakeDamage += OnTakeDamage;
+            UpdateHealthBar();
+        }
+
+        private void OnTakeDamage(Entity self, Entity source)
+        {
+            UpdateHealthBar();
+        }
+
+        private void UpdateHealthBar()
+        {
+            HealthBar.fillAmount = Attributes[EntityAttribute.HealthPoints] /
+                                   Config.LevelAttributes[EntityAttribute.HealthPoints].GetValueForLevel(Level);
         }
 
         public void SetAgentTarget(Vector3 position)
