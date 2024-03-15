@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LevelConfig
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 2
+    SerializedFormat: 0
     SerializedBytes: 
     ReferencedUnityObjects: []
     SerializedBytesString: 
@@ -21,15 +21,13 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  StructurePrefab: {fileID: 5900254958730229012, guid: cc000dbc48faf7245ae511a8e2b24c86, type: 3}
-  EntityConfig: {fileID: 11400000, guid: efa26f454779ecf43bb80a622bf4178d, type: 2}
   SpawnChance:
   - weight: 0.3333
     Config: {fileID: 11400000, guid: f0b9ffb804435154ebae2e74c62686f3, type: 2}
   - weight: 0.3333
-    Config: {fileID: 11400000, guid: f0b9ffb804435154ebae2e74c62686f3, type: 2}
+    Config: {fileID: 11400000, guid: 3ecee165f1bccd04e9b9c924d2f9b131, type: 2}
   - weight: 0.3333
-    Config: {fileID: 11400000, guid: f0b9ffb804435154ebae2e74c62686f3, type: 2}
+    Config: {fileID: 11400000, guid: c3355687f226a1540b873e82490d278f, type: 2}
   PreparationTime: 10
   RoundTime: 10
   SpawnInterval: 0.5
