@@ -66,7 +66,7 @@ Examples:
 - Systems communicate with each other via events, making extension easy.
 - Systems have interfaces so they can be mocked in unit tests.
 - The use of MonoBehaviour was reduced to a minimum to make the code less dependent on Unity.
-- Some unit uniting to test system stability
+- Some unit testing to system stability and QA
 
 ### Perfomance
 
