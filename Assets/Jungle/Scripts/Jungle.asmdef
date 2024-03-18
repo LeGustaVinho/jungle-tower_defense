@@ -1,0 +1,23 @@
+{
+    "name": "Jungle",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8c4dd21966739024fbd72155091d199e",
+        "GUID:2247f345c1389cb428906dc038800b93",
+        "GUID:7cfcc1a20ff91614a98283cdb05a1dbe",
+        "GUID:2bafac87e7f4b9b418d9448d219b01ab",
+        "GUID:d962d0b942a7fff4092f4dbd41f1907f",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:421b94f4adcaa2a4b802560e8ad2f80c",
+        "GUID:24044e8960e64a144b7a05351e2cc6ea"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

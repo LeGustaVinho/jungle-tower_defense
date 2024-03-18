@@ -17,11 +17,12 @@ namespace Jungle.Scripts.Entities
         [BoxGroup("Npc Entity")] [SerializeField]
         private Image HealthBar;
         
-        public override void Initialize(EntityConfig config, int level, ITimerManager timerManager)
+        public override void Initialize(EntityConfig config, int level, ITimerManager timerManager, 
+            IUnityEngineAPI unityEngineAPI)
         {
-            base.Initialize(config, level, timerManager);
+            base.Initialize(config, level, timerManager, unityEngineAPI);
             
-            CombatSystemComponent = new CombatSystem(this, timerManager, null, null);
+            CombatSystemComponent = new CombatSystem(this, timerManager, null, null, unityEngineAPI);
 
             NavMeshAgent.speed = Attributes[EntityAttribute.Speed];
             NavMeshAgent.angularSpeed = Attributes[EntityAttribute.AngularSpeed];
@@ -31,7 +32,7 @@ namespace Jungle.Scripts.Entities
             UpdateHealthBar();
         }
 
-        private void OnTakeDamage(Entity self, Entity source)
+        private void OnTakeDamage(IEntity self, IEntity source)
         {
             UpdateHealthBar();
         }

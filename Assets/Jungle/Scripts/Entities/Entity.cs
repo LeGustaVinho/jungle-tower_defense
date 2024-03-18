@@ -6,10 +6,24 @@ using UnityEngine;
 
 namespace Jungle.Scripts.Entities
 {
-    public class Entity : MonoBehaviour, ICombatable
+    public interface IEntity
     {
-        [BoxGroup("Entity")]
-        public EntityConfig Config;
+        EntityConfig Config { get; set; }
+        Vector3 Position { get; }
+        ICombatSystem CombatSystemComponent { get; }
+        Dictionary<EntityAttribute, float> Attributes { get; }
+        int Level { get; set; }
+        bool IsAlive { get; }
+        void Initialize(EntityConfig config, int level, ITimerManager timerManager, 
+            IUnityEngineAPI unityEngineAPI);
+        
+        GameObject GameObject { get; }
+    }
+
+    public class Entity : MonoBehaviour, ICombatable, IEntity
+    {
+        [BoxGroup("Entity")][ShowInInspector]
+        public EntityConfig Config { get; set; }
         
         [SerializeField] [BoxGroup("Entity")]
         private Transform Transform;
@@ -17,22 +31,27 @@ namespace Jungle.Scripts.Entities
         public Vector3 Position => Transform != null ? Transform.position : Vector3.zero;
         
         public ICombatSystem CombatSystemComponent { protected set; get; }
-        
-        [ShowInInspector][BoxGroup("Entity")]
-        public Dictionary<EntityAttribute, float> Attributes = new Dictionary<EntityAttribute, float>();
 
-        [BoxGroup("Entity")]
-        public int Level;
+        [ShowInInspector] [BoxGroup("Entity")]
+        public Dictionary<EntityAttribute, float> Attributes { get; } = new Dictionary<EntityAttribute, float>();
 
+        [BoxGroup("Entity")][ShowInInspector]
+        public int Level { get; set; }
+
+        [ShowInInspector]
         public bool IsAlive => Attributes[EntityAttribute.HealthPoints] > 0;
 
-        protected ITimerManager TimerManager;
+        public GameObject GameObject => this.gameObject;
 
-        public virtual void Initialize(EntityConfig config, int level, ITimerManager timerManager)
+        protected ITimerManager TimerManager;
+        protected IUnityEngineAPI UnityEngineAPI;
+
+        public virtual void Initialize(EntityConfig config, int level, ITimerManager timerManager, IUnityEngineAPI unityEngineAPI)
         {
             Config = config;
             Level = level;
             TimerManager = timerManager;
+            UnityEngineAPI = unityEngineAPI;
             Attributes.Clear();
 
             foreach (KeyValuePair<EntityAttribute, SimpleAttribute> pair in Config.LevelAttributes)

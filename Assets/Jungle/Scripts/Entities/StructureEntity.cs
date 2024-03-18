@@ -24,9 +24,10 @@ namespace Jungle.Scripts.Entities
         [SerializeField] [BoxGroup("Structure")]
         private TextMeshProUGUI nameText;
 
-        public override void Initialize(EntityConfig config, int level, ITimerManager timerManager)
+        public override void Initialize(EntityConfig config, int level, ITimerManager timerManager, 
+                IUnityEngineAPI unityEngineAPI)
         {
-            base.Initialize(config, level, timerManager);
+            base.Initialize(config, level, timerManager, unityEngineAPI);
 
             structureConfig = config as StructureConfig;
 
@@ -35,7 +36,7 @@ namespace Jungle.Scripts.Entities
                     Attributes[EntityAttribute.ProjectileSpeed]);
 
             CombatSystemComponent =
-                new CombatSystem(this, timerManager, structureConfig.TargetSystem, projectileSystem);
+                new CombatSystem(this, timerManager, structureConfig.TargetSystem, projectileSystem, unityEngineAPI);
             CombatSystemComponent.Enable();
 
             nameText.text = structureConfig.DisplayName;

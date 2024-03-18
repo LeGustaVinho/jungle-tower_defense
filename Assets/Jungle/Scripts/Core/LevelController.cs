@@ -36,6 +36,7 @@ namespace Jungle.Scripts.Core
         private readonly LevelConfig levelConfig;
         private readonly ITimerManager timerManager;
         private readonly IPlayer player;
+        private readonly IUnityEngineAPI unityEngineAPI;
         private GoalTriggerDispatcher goalTriggerDispatcher;
 
         [ShowInInspector]
@@ -49,13 +50,14 @@ namespace Jungle.Scripts.Core
         private Timer levelTimer;
 
         public LevelController(LevelConfig levelConfig, ITimerManager timerManager, BoxCollider spawnerArea, 
-            GoalTriggerDispatcher goalTriggerDispatcher, IPlayer player)
+            GoalTriggerDispatcher goalTriggerDispatcher, IPlayer player, IUnityEngineAPI unityEngineAPI)
         {
             this.levelConfig = levelConfig;
             this.timerManager = timerManager;
             this.SpawnerArea = spawnerArea;
             this.goalTriggerDispatcher = goalTriggerDispatcher;
             this.player = player;
+            this.unityEngineAPI = unityEngineAPI;
 
             GoalCollider = goalTriggerDispatcher.GetComponent<BoxCollider>();
             goalTriggerDispatcher.OnTriggerEnterEvent += OnGoalTriggerEnter;
@@ -125,7 +127,7 @@ namespace Jungle.Scripts.Core
             NpcEntity newNpc = Pool.Instantiate(randomNpcConfig.Config.Prefab, randomSpawnPoint, 
                 Quaternion.LookRotation(randomTargetPoint - randomSpawnPoint));
             
-            newNpc.Initialize(randomNpcConfig.Config, Level, timerManager);
+            newNpc.Initialize(randomNpcConfig.Config, Level, timerManager, unityEngineAPI);
             newNpc.SetAgentTarget(randomTargetPoint);
             newNpc.CombatSystemComponent.OnDie += OnNpcDie;
             
@@ -137,17 +139,17 @@ namespace Jungle.Scripts.Core
             }
         }
         
-        private void OnGoalTriggerEnter(Entity entity)
+        private void OnGoalTriggerEnter(IEntity entity)
         {
-            Pool.Destroy(entity);
+            Pool.Destroy(entity as Entity);
             player.CurrentHealthPoint -= (int)entity.Attributes[EntityAttribute.PlayerDamage];
         }
 
-        private void OnNpcDie(Entity killed, Entity killer)
+        private void OnNpcDie(IEntity killed, IEntity killer)
         {
             killed.CombatSystemComponent.OnDie -= OnNpcDie;
             activeNpcs.Remove(killed as NpcEntity);
-            Pool.Destroy(killed);
+            Pool.Destroy(killed as Entity);
             player.Points += (int)killed.Attributes[EntityAttribute.Points];
             player.Money += (int)killed.Attributes[EntityAttribute.Money];
         }

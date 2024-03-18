@@ -7,7 +7,7 @@ namespace Jungle.Scripts.Mechanics
 {
     public interface IProjectileSystem
     {
-        void Shoot(Entity target, Action onHit);
+        void Shoot(IEntity target, Action onHit);
     }
 
     public class ProjectileSystem : IProjectileSystem
@@ -23,7 +23,7 @@ namespace Jungle.Scripts.Mechanics
             this.velocity = velocity;
         }
 
-        public void Shoot(Entity target, Action onHit)
+        public void Shoot(IEntity target, Action onHit)
         {
             ProjectileEntity newProjectile = Pool.Instantiate(projectileEntityPrefab, startPosition, Quaternion.identity);
             newProjectile.Initialize(target, velocity, onHit);

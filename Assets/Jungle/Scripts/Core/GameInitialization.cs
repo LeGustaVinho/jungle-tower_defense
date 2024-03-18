@@ -56,17 +56,20 @@ namespace Jungle.Scripts.Core
         {
             gridDrawer.cellSize = structureBuilderConfig.GridSnappingDistance;
             gridDrawer.DrawGrid();
-            
+
+            IUnityEngineAPI unityEngineAPI = new UnityEngineAPI();
             timerManager = new TimerManager();
             player = new Player(playerConfig);
-            levelController = new LevelController(levelConfig, timerManager, spawnerArea, goalTriggerDispatcher, player);
+            levelController = new LevelController(levelConfig, timerManager, spawnerArea, goalTriggerDispatcher, player, unityEngineAPI);
             leaderboard = new Leaderboard(player, levelController);
+            leaderboard.Load();
             screenController = new ScreenController(player, levelController, startScreen, inGameScreen, structureBuilderConfig, leaderboard);
             structureBuilder = new StructureBuilder(structureBuilderConfig,timerManager, 
-                player, levelController, screenController,
-                structureBuildRaycaster, structureUpgradeRaycaster, structureDestroyRaycaster);
+                player, levelController, unityEngineAPI, screenController, structureBuildRaycaster, 
+                structureUpgradeRaycaster, structureDestroyRaycaster);
             
             timerManager.Initialize();
+            
         }
     }
 }

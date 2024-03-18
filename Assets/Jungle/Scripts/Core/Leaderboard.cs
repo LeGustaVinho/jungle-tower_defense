@@ -42,8 +42,6 @@ namespace Jungle.Scripts.Core
             leaderBoardFilePath.Extension = "json";
 
             player.OnLoseGame += OnLoseGame;
-
-            Load();
         }
 
         private void OnLoseGame()
@@ -56,14 +54,14 @@ namespace Jungle.Scripts.Core
         }
 
         [Button]
-        private void Save()
+        public void Save()
         {
             string json = JsonConvert.SerializeObject(LeaderboardEntries, Formatting.Indented);
             System.IO.File.WriteAllText(leaderBoardFilePath.Path, json);
         }
 
         [Button]
-        private void Load()
+        public void Load()
         {
             if (System.IO.File.Exists(leaderBoardFilePath.Path))
             {

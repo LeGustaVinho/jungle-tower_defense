@@ -22,19 +22,21 @@ namespace Jungle.Scripts.Mechanics
         private ITimerManager timerManager;
         private IPlayer player;
         private ILevelController levelController;
+        private IUnityEngineAPI unityEngineAPI;
         private ScreenController screenController;
 
         [ShowInInspector]
         private StructureConfig selectedStructureConfig;
 
         public StructureBuilder(StructureBuilderConfig structureBuilderConfig, ITimerManager timerManager, 
-            IPlayer player, ILevelController levelController, ScreenController screenController,
-            ScreenToWorldInfo structureBuilderRaycaster, ScreenToWorldInfo structureUpgradeRaycaster, 
-            ScreenToWorldInfo structureDestroyRaycaster)
+            IPlayer player, ILevelController levelController, IUnityEngineAPI unityEngineAPI,
+            ScreenController screenController, ScreenToWorldInfo structureBuilderRaycaster, 
+            ScreenToWorldInfo structureUpgradeRaycaster, ScreenToWorldInfo structureDestroyRaycaster)
         {
             this.timerManager = timerManager;
             this.player = player;
             this.levelController = levelController;
+            this.unityEngineAPI = unityEngineAPI;
             this.screenController = screenController;
             this.structureBuilderConfig = structureBuilderConfig;
             this.structureBuilderRaycaster = structureBuilderRaycaster;
@@ -127,14 +129,14 @@ namespace Jungle.Scripts.Mechanics
             }
             
             Vector3 pointSnappedToGrid = SnapToGridKeepY(hitinfo.point);
-            Collider[] colliders = Physics.OverlapBox(pointSnappedToGrid, 
+            Collider[] colliders = unityEngineAPI.OverlapBox(pointSnappedToGrid, 
                 Vector3.one * (structureBuilderConfig.GridSnappingDistance * 0.4f), Quaternion.identity, 
                 structureBuilderConfig.StructureLayer, QueryTriggerInteraction.Collide);
 
             if (colliders.Length != 0) return;
             
             StructureEntity newStructure = Object.Instantiate(selectedStructureConfig.Prefab, pointSnappedToGrid, Quaternion.identity);
-            newStructure.Initialize(selectedStructureConfig, 1, timerManager);
+            newStructure.Initialize(selectedStructureConfig, 1, timerManager, unityEngineAPI);
 
             structureBuilderRaycaster.CanInput = false;
             MonoBehaviourFacade.Instance.StartCoroutine(CheckNavMeshPathBlocking(newStructure));

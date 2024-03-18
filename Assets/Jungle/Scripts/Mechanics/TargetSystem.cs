@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Jungle.Scripts.Core;
 using Jungle.Scripts.Entities;
 using UnityEngine;
 
@@ -6,8 +7,8 @@ namespace Jungle.Scripts.Mechanics
 {
     public interface ITargetSystem
     {
-        List<T> FindEntitiesInAreaRadius<T>(Vector3 startPosition, float detectionRadius)
-            where T : Entity;
+        List<IEntity> FindEntitiesInAreaRadius(IUnityEngineAPI unityEngineAPI, Vector3 startPosition,
+            float detectionRadius);
     }
 
     [CreateAssetMenu(menuName = "Jungle/Create TargetSystem", fileName = "NewTargetSystem")]
@@ -15,14 +16,13 @@ namespace Jungle.Scripts.Mechanics
     {
         public EntityType EntityType;
         
-        public List<T> FindEntitiesInAreaRadius<T>(Vector3 startPosition, float detectionRadius)
-            where T : Entity
+        public List<IEntity> FindEntitiesInAreaRadius(IUnityEngineAPI unityEngineAPI, Vector3 startPosition, float detectionRadius)
         {
-            List<T> nearbyEntities = new List<T>();
+            List<IEntity> nearbyEntities = new List<IEntity>();
 
-            T[] allEntities = FindObjectsByType<T>(FindObjectsSortMode.None);
+            IEntity[] allEntities = unityEngineAPI.FindObjectsByEntity(FindObjectsSortMode.None);
             
-            foreach (T entity in allEntities)
+            foreach (IEntity entity in allEntities)
             {
                 float distance = Vector3.Distance(entity.Position, startPosition);
 
@@ -35,11 +35,11 @@ namespace Jungle.Scripts.Mechanics
             return nearbyEntities;
         }
         
-        public static Entity FindNearestEntityToPoint(List<Entity> entities, Vector3 point)
+        public static IEntity FindNearestEntityToPoint(List<IEntity> entities, Vector3 point)
         {
-            Entity nearestObject = null;
+            IEntity nearestObject = null;
             float closestDistanceSqr = Mathf.Infinity;
-            foreach (Entity entity in entities)
+            foreach (IEntity entity in entities)
             {
                 float distance = Vector3.Distance(entity.Position, point);
                 if (distance < closestDistanceSqr)

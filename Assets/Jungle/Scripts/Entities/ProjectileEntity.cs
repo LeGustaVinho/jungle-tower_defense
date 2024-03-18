@@ -10,14 +10,14 @@ namespace Jungle.Scripts.Entities
         public event Action OnHit;
         
         [ShowInInspector]
-        private Entity Target;
+        private IEntity Target;
         
         [ShowInInspector]
         private float Velocity = 5f;
 
         private Transform Transform;
 
-        public void Initialize(Entity target, float velocity, Action onHit)
+        public void Initialize(IEntity target, float velocity, Action onHit)
         {
             Transform = GetComponent<Transform>();
 

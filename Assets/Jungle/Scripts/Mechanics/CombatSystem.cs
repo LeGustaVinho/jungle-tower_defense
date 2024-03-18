@@ -9,40 +9,43 @@ namespace Jungle.Scripts.Mechanics
 {
     public interface ICombatSystem
     {
-        event Action<Entity, Entity> OnTakeDamage;
-        event Action<Entity, Entity> OnDoDamage;
-        event Action<Entity, Entity> OnDie;
+        event Action<IEntity, IEntity> OnTakeDamage;
+        event Action<IEntity, IEntity> OnDoDamage;
+        event Action<IEntity, IEntity> OnDie;
         bool IsEnable { get; }
         void Enable();
         void Disable();
-        void AttackTarget(Entity target);
-        void ReceiveDamage(float damageToReceive, Entity source);
+        void AttackTarget(IEntity target);
+        void ReceiveDamage(float damageToReceive, IEntity source);
     }
 
     [Serializable]
     public class CombatSystem : ICombatSystem
     {
-        public event Action<Entity, Entity> OnTakeDamage;
-        public event Action<Entity, Entity> OnDoDamage;
-        public event Action<Entity, Entity> OnDie;
+        public event Action<IEntity, IEntity> OnTakeDamage;
+        public event Action<IEntity, IEntity> OnDoDamage;
+        public event Action<IEntity, IEntity> OnDie;
 
         [ShowInInspector]
         public bool IsEnable { private set; get; }
 
-        private Entity self;
+        private IEntity self;
         private ITimerManager timerManager;
         private ITargetSystem targetSystem;
         private IProjectileSystem projectileSystem;
+        private IUnityEngineAPI unityEngineAPI;
 
         private Timer scanTargetTimer;
         private Timer attackTargetTimer;
 
-        public CombatSystem(Entity self, ITimerManager timerManager, ITargetSystem targetSystem, IProjectileSystem projectileSystem)
+        public CombatSystem(IEntity self, ITimerManager timerManager, ITargetSystem targetSystem, 
+            IProjectileSystem projectileSystem, IUnityEngineAPI unityEngineAPI)
         {
             this.self = self;
             this.timerManager = timerManager;
             this.targetSystem = targetSystem;
             this.projectileSystem = projectileSystem;
+            this.unityEngineAPI = unityEngineAPI;
         }
 
         public void Enable()
@@ -68,7 +71,7 @@ namespace Jungle.Scripts.Mechanics
             }
         }
         
-        public void AttackTarget(Entity target)
+        public void AttackTarget(IEntity target)
         {
             if (!IsEnable)
             {
@@ -82,7 +85,7 @@ namespace Jungle.Scripts.Mechanics
                 return; //Out of range
             }
 
-            if (!target.IsAlive || !target.gameObject.activeInHierarchy)
+            if (!target.IsAlive || !target.GameObject.activeInHierarchy)
             {
                 ScanForTargets();
                 return; //Target is dead
@@ -96,7 +99,7 @@ namespace Jungle.Scripts.Mechanics
             attackTargetTimer = timerManager.SetTimer(self.Attributes[EntityAttribute.AttackSpeed], () => AttackTarget(target)); //Wait until attack is available and attack same target
         }
 
-        public void ReceiveDamage(float damageToReceive, Entity source)
+        public void ReceiveDamage(float damageToReceive, IEntity source)
         {
             if (self.Attributes[EntityAttribute.HealthPoints] - damageToReceive <= 0)
             {
@@ -110,9 +113,9 @@ namespace Jungle.Scripts.Mechanics
             }
         }
         
-        private void DoDamage(Entity target, float damageToDo)
+        private void DoDamage(IEntity target, float damageToDo)
         {
-            if (!target.IsAlive || !target.gameObject.activeInHierarchy) return;
+            if (!target.IsAlive || !target.GameObject.activeInHierarchy) return;
             
             target.CombatSystemComponent.ReceiveDamage(damageToDo, self);
             OnDoDamage?.Invoke(self, target);
@@ -130,8 +133,9 @@ namespace Jungle.Scripts.Mechanics
 
             try
             {
-                List<Entity> nearbyTargets = targetSystem.FindEntitiesInAreaRadius<Entity>(self.Position, self.Attributes[EntityAttribute.Range]);
-                Entity closestTarget = TargetSystem.FindNearestEntityToPoint(nearbyTargets, self.Position);
+                List<IEntity> nearbyTargets = targetSystem.FindEntitiesInAreaRadius(unityEngineAPI, self.Position, 
+                    self.Attributes[EntityAttribute.Range]);
+                IEntity closestTarget = TargetSystem.FindNearestEntityToPoint(nearbyTargets, self.Position);
                 
                 if (closestTarget != null)
                 {
