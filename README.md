@@ -66,6 +66,7 @@ Examples:
 - Systems communicate with each other via events, making extension easy.
 - Systems have interfaces so they can be mocked in unit tests.
 - The use of MonoBehaviour was reduced to a minimum to make the code less dependent on Unity.
+- Some unit uniting to test system stability
 
 ### Perfomance
 
@@ -95,3 +96,4 @@ If it were not possible to use Unity's NavMesh, I would create a grid waypoint s
 - The following external third-party tools were used:
 	- [Odin Inspector](https://odininspector.com/ "Odin Inspector"): Makes inspector customization and serialization easy.
 	- Newtonsoft JSON: Official Unity fork of the JSON serialization lib
+	- [Moq](https://github.com/devlooped/moq "Moq"): Friendly mocking library for .NET
